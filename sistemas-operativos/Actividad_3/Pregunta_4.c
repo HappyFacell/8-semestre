@@ -20,7 +20,7 @@ int main()
 
     do
     {
-        printf("Shell >");
+        printf(">>>>$");
         scanf("%[^\n]%*c", cmd);
         system(cmd);
     } while (strcmp(cmd, "exit") != 0);

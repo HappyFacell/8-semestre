@@ -31,13 +31,14 @@ int main()
     }
     else // En el padre
     {
-        wait(&status);
-        printf("Mi proceso hijo ya ha terminado\n");
+
         for (int i = 0; i < 10; i++)
         {
             printf("Soy el padre\n");
             sleep(1);
         }
     }
+    wait(&status);
+    printf("Mi proceso hijo ya ha terminado\n");
     return 0;
 }

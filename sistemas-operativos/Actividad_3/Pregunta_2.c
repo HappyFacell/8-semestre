@@ -24,18 +24,19 @@ int main(int argc, char *argv[])
     pid_t p;
     int status;
 
-    printf("\n");
-    // printf("%d\n", atoi(argv[1]));
-    // p = fork();
-    int count = 0;
-    for (int i = 0; i <= atoi(argv[1]); i++)
+    int n;
+
+    if (argc < 2)
     {
-        count++;
-        for (int j = 0; j <= i; j++)
-        {
-            printf("%d, ", count);
-        }
-        printf("\n");
+        n = 1;
+    }
+    else
+    {
+        n = atoi(argv[1]);
+    }
+    for (int i = 0; i <= n; i++)
+    {
+        printf("%d, \n", i);
         p = fork();
     }
 

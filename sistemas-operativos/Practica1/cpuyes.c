@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define CICLOS 72300000 // Modifique este valor para que la duración sea 10 segundos
+#define CICLOS 75400000 // Modifique este valor para que la duración sea 10 segundos
 
 int main(int argc, char *argv[])
 {

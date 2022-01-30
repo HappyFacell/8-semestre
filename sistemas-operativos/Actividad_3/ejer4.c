@@ -14,15 +14,25 @@ intérprete de comandos.
 #include <unistd.h>
 #include <string.h>
 
+void getstr(char *str)
+{
+    fgets(str, 80, stdin);
+    while (*str != '\n')
+    {
+        str++;
+    }
+    *str = '\0';
+}
+
 int main()
 {
     char cmd[80];
-
     do
     {
         printf(">>>>$");
-        scanf("%[^\n]%*c", cmd);
+        getstr(cmd);
         system(cmd);
     } while (strcmp(cmd, "exit") != 0);
+
     return 0;
 }

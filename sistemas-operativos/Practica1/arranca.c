@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <sys/wait.h>
+
 int main()
 {
     long long start_ts;
@@ -16,6 +17,7 @@ int main()
     char spcpu[5];
     int status;
     float tasa;
+
     printf("Procesos ............ :");
     scanf("%d", &procs);
     printf("Porcentaje uso de CPU :");

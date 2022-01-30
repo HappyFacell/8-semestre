@@ -5,6 +5,9 @@
 
 int main()
 {
+	sleep(10);
 	printf("Hola mundo, soy el proceso %d\n",getpid());
+	sleep(10);
+	printf("Proceso acabado\n");
 	return 0;
 }

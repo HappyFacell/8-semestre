@@ -5,6 +5,12 @@
 
 #define CICLOS 75400000 // Modifique este valor para que la duración sea 10 segundos
 
+
+/*Ciclos necesarioa para que el tiempo sea de 
+10 seg en LAP-Surface
+*/
+//26500000 tiempo para LAP-Surface
+
 int main(int argc, char *argv[])
 {
     long long start_ts;

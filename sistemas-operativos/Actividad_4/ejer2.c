@@ -7,7 +7,8 @@
 En un proceso zombie
 , 
 ¿por qué?
-Porque el padre no espera a que el hijo termine, y se queda como un proceso zombie hasta que el programa termine
+Porque el padre no espera a que el hijo termine, y se queda 
+como un proceso zombie hasta que el programa termine
 */
 
 #include <stdio.h>

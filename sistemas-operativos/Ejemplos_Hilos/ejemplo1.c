@@ -3,6 +3,10 @@
 #include <unistd.h>
 #include <pthread.h>
 
+/*
+gcc MyProgram.c -o MyProgram -lpthread
+*/
+
 void *holamundo(void *args)
 {
 	sleep(2);

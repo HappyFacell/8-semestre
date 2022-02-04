@@ -1,18 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+  
 int main()
 {
-    static const char studentID[]="Clarance", password[]="123456";
-    char id[8], p[6];
-    int n=1, x, y;
-
+    FILE *fptr;
+    char c;
+    char u[20];
+    char p[20];
+    if ((fptr = fopen("passwd.txt", "r")) == NULL)
+    {
+        printf("Cannot open file \n");
+        exit(0);
+    }
+  
+    c = fgetc(fptr);
+    while (c != EOF)
+    {
+        int x=0;
+        while(c != ':'){
+            u[0] = c;
+            x++;
+        }
+        x=0;
+        while (c != '\n'){
+            p[x] = c;
+            x++
+        }
+        printf (",%c", c);
+        c = fgetc(fptr);
+    }
+  
+    fclose(fptr);
+/*
     printf("%lu %lu:", strlen(id), strlen(studentID));
 
 
     do{
-        printf("\nStudent_ID:");
+        printf("\nLogin:");
         scanf("%s", id);
         fflush(stdout);
 
@@ -36,4 +61,5 @@ int main()
         }
 
     }while (n<=5);
+    */
 }

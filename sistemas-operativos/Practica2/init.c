@@ -18,15 +18,6 @@ int main()
     {
         p = fork();
         if (p == 0)
-            proc(i);
+            printf("\n");
     }
-
-    for (i = 1; i <= NPROCS; i++)
-        wait(&status);
-}
-
-void proc(int n)
-{
-    printf("Soy el proceso hijo %d, mi pid es %d y mi padre es: %d\n", n, getpid(), getppid());
-    exit(0);
 }

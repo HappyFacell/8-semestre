@@ -1,86 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-  
+
+void login()
+{
+    printf("Login correcto");
+    //Crear un proceso hijo que será reemplazado
+    //por una sesión del shell (proceso sh).
+}
+
 int main()
 {
-<<<<<<< HEAD
     FILE *fptr;
     char c;
-    char u[20];
-    char p[20];
-    if ((fptr = fopen("passwd.txt", "r")) == NULL)
-    {
-        printf("Cannot open file \n");
-        exit(0);
-    }
-  
-    c = fgetc(fptr);
-    while (c != EOF)
-    {
-        int x=0;
-        while(c != ':'){
-            u[0] = c;
-            x++;
-        }
-        x=0;
-        while (c != '\n'){
-            p[x] = c;
-            x++
-        }
-        printf (",%c", c);
-        c = fgetc(fptr);
-    }
-  
-    fclose(fptr);
-/*
-    printf("%lu %lu:", strlen(id), strlen(studentID));
 
-
-    do{
-        printf("\nLogin:");
-=======
-    static const char studentID[] = "Clarance", password[] = "123456";
-    char id[8], p[6];
-    int n = 1, x, y;
-
-    printf("%lu %lu:", strlen(id), strlen(studentID));
+    int iterator;
 
     do
     {
-        printf("\nStudent_ID:");
->>>>>>> 8292af94d9e5870fe32d8e1ec716aea7cd9d862d
-        scanf("%s", id);
+        char u[20];
+        char p[20];
+        char cu[20];
+        char cp[20];
+        printf("\nLogin:");
+        scanf("%s", u);
         fflush(stdout);
 
         printf("\nPassword:");
         scanf("%s", p);
         fflush(stdout);
 
-        x = strcmp(id, studentID);
-        y = strcmp(p, password);
-
-        if (x == 0 && y == 0)
+        if ((fptr = fopen("passwd.txt", "r")) == NULL)
         {
-            printf("\nSucessfully Logged In");
-        }
-        else
-        {
-            printf("\nWrong Password, try again  %d", 5 - n);
-            getchar();
-            n++;
+            printf("Cannot open file \n");
+            exit(0);
         }
 
-        if (n > 5)
+        c = fgetc(fptr);
+        while (c != EOF)
         {
-            printf("\nAccess Denied");
-            getchar();
-        }
+            iterator = 0;
+            while (c != 58)
+            {
+                if (c == EOF)
+                {
+                    break;
+                }
+                if (c != '\n')
+                {
+                    cu[iterator] = c;
+                    iterator++;
+                    c = fgetc(fptr);
+                }
+            }
+            cu[iterator] = '\0';
 
-<<<<<<< HEAD
-    }while (n<=5);
-    */
-=======
-    } while (n <= 5);
->>>>>>> 8292af94d9e5870fe32d8e1ec716aea7cd9d862d
+            if (c == EOF)
+            {
+                break;
+            }
+            c = fgetc(fptr);
+            iterator = 0;
+
+            while (c != '\n')
+            {
+                if (c == EOF)
+                {
+                    break;
+                }
+                cp[iterator] = c;
+                iterator++;
+                c = fgetc(fptr);
+            }
+            cp[iterator] = '\0';
+            c = fgetc(fptr);
+            if (strcmp(u, cu) == 0 && strcmp(p, cp) == 0)
+            {
+                login();
+            }
+        }
+    } while (1);
+
+    fclose(fptr);
 }

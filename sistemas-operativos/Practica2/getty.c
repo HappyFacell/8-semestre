@@ -4,14 +4,14 @@
 
 int main()
 {
-    static const char studentID[]="Clarance", password[]="123456";
+    static const char studentID[] = "Clarance", password[] = "123456";
     char id[8], p[6];
-    int n=1, x, y;
+    int n = 1, x, y;
 
     printf("%lu %lu:", strlen(id), strlen(studentID));
 
-
-    do{
+    do
+    {
         printf("\nStudent_ID:");
         scanf("%s", id);
         fflush(stdout);
@@ -20,20 +20,25 @@ int main()
         scanf("%s", p);
         fflush(stdout);
 
-        x=strcmp(id, studentID);
-        y=strcmp(p, password);
+        x = strcmp(id, studentID);
+        y = strcmp(p, password);
 
-        if(x==0 && y==0){
+        if (x == 0 && y == 0)
+        {
             printf("\nSucessfully Logged In");
-        }else {
-            printf("\nWrong Password, try again  %d", 5-n);
+        }
+        else
+        {
+            printf("\nWrong Password, try again  %d", 5 - n);
             getchar();
-            n++;}
+            n++;
+        }
 
-        if(n>5){
+        if (n > 5)
+        {
             printf("\nAccess Denied");
             getchar();
         }
 
-    }while (n<=5);
+    } while (n <= 5);
 }

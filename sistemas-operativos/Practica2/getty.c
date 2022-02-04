@@ -4,41 +4,70 @@
 
 int main()
 {
-    static const char studentID[] = "Clarance", password[] = "123456";
-    char id[8], p[6];
-    int n = 1, x, y;
-
-    printf("%lu %lu:", strlen(id), strlen(studentID));
-
-    do
+    FILE *fptr;
+    char c;
+    char u[20];
+    char p[20];
+    if ((fptr = fopen("passwd.txt", "r")) == NULL)
     {
-        printf("\nStudent_ID:");
-        scanf("%s", id);
-        fflush(stdout);
+        printf("Cannot open file \n");
+        exit(0);
+    }
 
-        printf("\nPassword:");
-        scanf("%s", p);
-        fflush(stdout);
-
-        x = strcmp(id, studentID);
-        y = strcmp(p, password);
-
-        if (x == 0 && y == 0)
+    c = fgetc(fptr);
+    while (c != EOF)
+    {
+        int x = 0;
+        while (c != ':')
         {
-            printf("\nSucessfully Logged In");
+            u[x] = c;
+            x++;
         }
-        else
+        x = 0;
+        while (c != '\n')
         {
-            printf("\nWrong Password, try again  %d", 5 - n);
-            getchar();
-            n++;
+            p[x] = c;
+            x++;
         }
+        printf(",%c", c);
+        c = fgetc(fptr);
+    }
 
-        if (n > 5)
-        {
-            printf("\nAccess Denied");
-            getchar();
-        }
+    fclose(fptr);
+    /*
+        printf("%lu %lu:", strlen(id), strlen(studentID));
 
-    } while (n <= 5);
+
+        do{
+            printf("\nLogin:");
+            scanf("%s", id);
+            fflush(stdout);
+
+            printf("\nPassword:");
+            scanf("%s", p);
+            fflush(stdout);
+
+            x = strcmp(id, studentID);
+            y = strcmp(p, password);
+
+            if (x == 0 && y == 0)
+            {
+                printf("\nSucessfully Logged In");
+            }
+            else
+            {
+                printf("\nWrong Password, try again  %d", 5 - n);
+                getchar();
+                n++;
+            }
+
+            if (n > 5)
+            {
+                printf("\nAccess Denied");
+                getchar();
+            }
+
+
+        }while (n<=5);
+        */
 }

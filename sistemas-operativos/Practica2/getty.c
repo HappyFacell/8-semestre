@@ -2,72 +2,84 @@
 #include <stdlib.h>
 #include <string.h>
 
+void login()
+{
+    printf("Login correcto");
+    //Crear un proceso hijo que será reemplazado
+    //por una sesión del shell (proceso sh).
+}
+
 int main()
 {
     FILE *fptr;
     char c;
-    char u[20];
-    char p[20];
-    if ((fptr = fopen("passwd.txt", "r")) == NULL)
-    {
-        printf("Cannot open file \n");
-        exit(0);
-    }
 
-    c = fgetc(fptr);
-    while (c != EOF)
+    int iterator;
+
+    do
     {
-        int x = 0;
-        while (c != ':')
+        char u[20];
+        char p[20];
+        char cu[20];
+        char cp[20];
+        printf("\nLogin:");
+        scanf("%s", u);
+        fflush(stdout);
+
+        printf("\nPassword:");
+        scanf("%s", p);
+        fflush(stdout);
+
+        if ((fptr = fopen("passwd.txt", "r")) == NULL)
         {
-            u[x] = c;
-            x++;
+            printf("Cannot open file \n");
+            exit(0);
         }
-        x = 0;
-        while (c != '\n')
-        {
-            p[x] = c;
-            x++;
-        }
-        printf(",%c", c);
+
         c = fgetc(fptr);
-    }
+        while (c != EOF)
+        {
+            iterator = 0;
+            while (c != 58)
+            {
+                if (c == EOF)
+                {
+                    break;
+                }
+                if (c != '\n')
+                {
+                    cu[iterator] = c;
+                    iterator++;
+                    c = fgetc(fptr);
+                }
+            }
+            cu[iterator] = '\0';
+
+            if (c == EOF)
+            {
+                break;
+            }
+            c = fgetc(fptr);
+            iterator = 0;
+
+            while (c != '\n')
+            {
+                if (c == EOF)
+                {
+                    break;
+                }
+                cp[iterator] = c;
+                iterator++;
+                c = fgetc(fptr);
+            }
+            cp[iterator] = '\0';
+            c = fgetc(fptr);
+            if (strcmp(u, cu) == 0 && strcmp(p, cp) == 0)
+            {
+                login();
+            }
+        }
+    } while (1);
 
     fclose(fptr);
-    /*
-        printf("%lu %lu:", strlen(id), strlen(studentID));
-
-
-        do{
-            printf("\nLogin:");
-            scanf("%s", id);
-            fflush(stdout);
-
-            printf("\nPassword:");
-            scanf("%s", p);
-            fflush(stdout);
-
-            x = strcmp(id, studentID);
-            y = strcmp(p, password);
-
-            if (x == 0 && y == 0)
-            {
-                printf("\nSucessfully Logged In");
-            }
-            else
-            {
-                printf("\nWrong Password, try again  %d", 5 - n);
-                getchar();
-                n++;
-            }
-
-            if (n > 5)
-            {
-                printf("\nAccess Denied");
-                getchar();
-            }
-
-
-        }while (n<=5);
-        */
 }

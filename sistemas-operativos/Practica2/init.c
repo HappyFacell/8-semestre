@@ -18,6 +18,6 @@ int main()
     {
         p = fork();
         if (p == 0)
-            printf("\n");
+            execlp("xterm", "xterm", "-e", "./getty", NULL);
     }
 }

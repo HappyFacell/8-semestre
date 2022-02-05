@@ -20,13 +20,6 @@ void login()
     }
 }
 
-void login()
-{
-    printf("Login correcto");
-    //Crear un proceso hijo que será reemplazado
-    //por una sesión del shell (proceso sh).
-}
-
 int main()
 {
     FILE *fptr;

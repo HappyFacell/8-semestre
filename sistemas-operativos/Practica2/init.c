@@ -20,4 +20,6 @@ int main()
         if (p == 0)
             execlp("xterm", "xterm", "-e", "./getty", NULL);
     }
+
+    
 }

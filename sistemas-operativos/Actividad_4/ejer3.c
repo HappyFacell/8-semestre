@@ -1,10 +1,10 @@
 /*
 3.- Desarrolla un programa donde un proceso padre crea un hijo,
- el padre tendrá una duración de 1 segundo y el hijo una duración 
- de 20 segundos. Antes de que el hijo termine observa qué procesos hay, 
+ el padre tendrá una duración de 1 segundo y el hijo una duración
+ de 20 segundos. Antes de que el hijo termine observa qué procesos hay,
  ¿En qué estado se encuentra el padre?
  No se encuentra el padre ya que lo terminamos.
- , 
+ ,
  ¿por qué?
  No se encuentra porque ahora el proceso hijo tomo el rol del padre.
 */

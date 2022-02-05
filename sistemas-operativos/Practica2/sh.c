@@ -3,11 +3,18 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 enum
 {
     MAXLINE = 256
 };
+
+void matarTodo()
+{
+    printf("Matando a todos los procesos\n");
+    execlp("killall init", "killall init", NULL);
+}
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +22,7 @@ int main(int argc, char *argv[])
     pid_t pid;
     int status;
 
-    printf(">>>>>$");
+    printf("sh  >");
     while (fgets(buf, MAXLINE, stdin) != NULL)
     {
 
@@ -34,10 +41,15 @@ int main(int argc, char *argv[])
 
         if (strcmp(buf, "exit") == 0)
         {
+            exit(127);
             break;
         }
+         if (strcmp(buf, "shutdown") == 0)
+            {
+                kill(getpid(), SIGUSR1);
+            }
 
-        printf(">>>>>$");
+        printf("sh  >");
     }
 
     return 0;

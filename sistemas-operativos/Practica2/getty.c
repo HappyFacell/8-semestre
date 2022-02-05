@@ -1,6 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <signal.h>
+
+void login()
+{
+    int p = fork();
+    if (p == 0)
+    {
+        execlp("./sh", "./sh", NULL);
+        exit(0);
+    }
+    else
+    {
+        wait(0);
+    }
+}
 
 void login()
 {

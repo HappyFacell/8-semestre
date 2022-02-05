@@ -14,9 +14,10 @@
 int main()
 {
 	int p;
-	p= fork();
-	if(p==0){
-		kill(getppid(),SIGKILL);
+	p = fork();
+	if (p == 0)
+	{
+		kill(getppid(), SIGKILL);
 		exit(0);
 	}
 	printf("Soy el padre");

@@ -3,11 +3,19 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 enum
 {
     MAXLINE = 256
 };
+
+void sigint_handler()
+    {
+        /*do something*/
+        printf("killing process %d\n",getpid());
+        exit(0);
+    }
 
 int main(int argc, char *argv[])
 {
@@ -15,7 +23,7 @@ int main(int argc, char *argv[])
     pid_t pid;
     int status;
 
-    printf(">>>>>$");
+    printf("sh  >");
     while (fgets(buf, MAXLINE, stdin) != NULL)
     {
 
@@ -34,10 +42,15 @@ int main(int argc, char *argv[])
 
         if (strcmp(buf, "exit") == 0)
         {
+            exit(127);
             break;
         }
+         if (strcmp(buf, "shutdown") == 0)
+            {
+                
+            }
 
-        printf(">>>>>$");
+        printf("sh  >");
     }
 
     return 0;

@@ -5,9 +5,9 @@
  Antes de que el padre termine observa qué procesos hay,
 ¿En qué estado se encuentra el hijo?
 En un proceso zombie
-, 
+,
 ¿por qué?
-Porque el padre no espera a que el hijo termine, y se queda 
+Porque el padre no espera a que el hijo termine, y se queda
 como un proceso zombie hasta que el programa termine
 */
 

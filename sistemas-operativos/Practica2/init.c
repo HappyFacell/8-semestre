@@ -26,10 +26,15 @@ int main()
 
     while (1)
     {
-        if (!wait(&status))
+        int temp = wait(&status);
+        if (temp > 0)
         {
-            break;
+            p = fork();
+            if (p == 0)
+            {
+                execlp("xterm", "xterm", "-e", "./getty", NULL);
+                exit(1);
+            }
         }
-        p = fork();
     }
 }

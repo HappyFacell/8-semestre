@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         }
          if (strcmp(buf, "shutdown") == 0)
             {
-                kill(getpid(), SIGUSR1);
+                
             }
 
         printf("sh  >");

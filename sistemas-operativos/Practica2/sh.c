@@ -10,11 +10,12 @@ enum
     MAXLINE = 256
 };
 
-void matarTodo()
-{
-    printf("Matando a todos los procesos\n");
-    execlp("killall init", "killall init", NULL);
-}
+void sigint_handler()
+    {
+        /*do something*/
+        printf("killing process %d\n",getpid());
+        exit(0);
+    }
 
 int main(int argc, char *argv[])
 {

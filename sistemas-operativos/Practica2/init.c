@@ -18,8 +18,18 @@ int main()
     {
         p = fork();
         if (p == 0)
+        {
             execlp("xterm", "xterm", "-e", "./getty", NULL);
+            exit(1);
+        }
     }
 
-    
+    while (1)
+    {
+        if (!wait(&status))
+        {
+            break;
+        }
+        p = fork();
+    }
 }

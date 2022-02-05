@@ -45,10 +45,6 @@ int main(int argc, char *argv[])
             exit(127);
             break;
         }
-         if (strcmp(buf, "shutdown") == 0)
-            {
-                
-            }
 
         printf("sh  >");
     }

@@ -3,10 +3,19 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 #define NPROCS 6
 
+volatile sig_atomic_t done = 0;
+
 void proc(int n);
+
+void term(int signum)
+{
+    printf("Caught!\n");
+    done = 1;
+}
 
 int main()
 {
@@ -26,6 +35,12 @@ int main()
 
     while (1)
     {
+        /*
+        struct sigaction action;
+        memset(&action, 0, sizeof(action));
+        action.sa_handler = term;
+        sigaction(kill(0, SIGKILL), &action, NULL);
+        */
         int temp = wait(&status);
         if (temp > 0)
         {

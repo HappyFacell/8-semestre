@@ -19,14 +19,20 @@ void login()
         wait(0);
     }
 }
+void sighan(int s)
+{
+    kill(getppid(), SIGTERM);
+    printf("%d\n", s);
+}
 
 int main()
 {
+    signal(SIGTERM, sighan);
     FILE *fptr;
     char c;
 
     int iterator;
-
+    printf("%d\n", getppid());
     do
     {
         char u[20];

@@ -1,38 +1,29 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <signal.h>
+#include <string.h>
+#include <sys/stat.h>
 
-void sigint_handler()
-{
-	/*do something*/
-	printf("killing process %d\n", getpid());
-	exit(0);
-}
+int main(void) {
+    const char* filename = "signals.txt";
 
-int main()
-{
-	int num_children = 4;
-	int i, pid, status;
-	printf("This is the parent. PID=%d\n", getpid());
+    FILE* input_file = fopen(filename, "r");
+    if (!input_file)
+        exit(EXIT_FAILURE);
 
-	while (1)
-	{
-		for (i = 0; i < num_children; i++)
-		{
-			if ((pid = fork()) == 0)
-			{
-				signal(SIGINT, sigint_handler);
-				printf("This is children %d\n", getpid());
-				sleep(1);
-				exit(0);
-			}
-		}
+    struct stat sb;
+    if (stat(filename, &sb) == -1) {
+        perror("stat");
+        exit(EXIT_FAILURE);
+    }
 
-		// Rest Parent code
-		sleep(1);
-		waitpid(pid, &status, 0);
-		printf("This is the parent again %d, children should have finished\n", getpid());
-	}
+    char* file_contents = malloc(sb.st_size);
+    fread(file_contents, sb.st_size, 1, input_file);
+
+    
+
+    fclose(input_file);
+	printf("%s\n", file_contents);
+    free(file_contents);
+
+    exit(EXIT_SUCCESS);
 }

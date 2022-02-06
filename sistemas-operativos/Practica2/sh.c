@@ -4,17 +4,34 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include <string.h>
 
 enum
 {
     MAXLINE = 256
 };
 
-void sigint_handler()
+void sigint_handler(int sig)
+{
+    char str[5];
+    sprintf(str, "%d", sig);
+    printf("killing process %d\n", getppid());
+    printf("Signal: %d\n", sig);
+    const char *filename = "signals.txt";
+
+    FILE *output_file = fopen(filename, "w+");
+    if (!output_file)
     {
-        printf("killing process %d\n",getppid());
-        kill(getppid(), SIGINT);
+        perror("fopen");
+        exit(EXIT_FAILURE);
     }
+
+    fwrite(str, 1, strlen(str), output_file);
+    printf("Done Writing!\n");
+
+    fclose(output_file);
+    kill(getppid(), sig);
+}
 
 int main(int argc, char *argv[])
 {
@@ -26,6 +43,7 @@ int main(int argc, char *argv[])
     while (fgets(buf, MAXLINE, stdin) != NULL)
     {
 
+        signal(SIGTERM, sigint_handler);
         if (buf[strlen(buf) - 1] == '\n')
             buf[strlen(buf) - 1] = 0;
 
@@ -44,12 +62,13 @@ int main(int argc, char *argv[])
             exit(127);
             break;
         }
-        if(strcmp(buf, "Shutdown") == 0){
-            sigint_handler();
+        if (strcmp(buf, "Shutdown") == 0)
+        {
+            kill(getpid(), SIGTERM);
+            break;
         }
 
         printf("sh  >");
-
     }
 
     return 0;

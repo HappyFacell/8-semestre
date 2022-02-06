@@ -17,8 +17,14 @@ void term(int signum)
     done = 1;
 }
 
+void sighan(int s)
+{
+    printf("Señal recibida\n");
+}
+
 int main()
 {
+
     int i;
     pid_t p;
     int status;
@@ -41,6 +47,7 @@ int main()
         action.sa_handler = term;
         sigaction(kill(0, SIGKILL), &action, NULL);
         */
+        signal(SIGINT, sighan);
         int temp = wait(&status);
         if (temp > 0)
         {

@@ -12,9 +12,8 @@ enum
 
 void sigint_handler()
     {
-        /*do something*/
-        printf("killing process %d\n",getpid());
-        exit(0);
+        printf("killing process %d\n",getppid());
+        kill(getppid(), SIGINT);
     }
 
 int main(int argc, char *argv[])
@@ -45,8 +44,12 @@ int main(int argc, char *argv[])
             exit(127);
             break;
         }
+        if(strcmp(buf, "Shutdown") == 0){
+            sigint_handler();
+        }
 
         printf("sh  >");
+
     }
 
     return 0;

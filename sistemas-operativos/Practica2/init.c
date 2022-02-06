@@ -13,6 +13,13 @@ volatile sig_atomic_t done = 0;
 
 int sighan()
 {
+    /*
+    Funcion para validar que se ejecuto el comando
+    "shutdown".
+    Lo que hace es leer el archivo signals.txt en donde
+    si se ejecuta dicho comando se escibe un 15, con esto retornamos un 1
+    salir del while de la linea 93.
+    */
     const char *filename = "signals.txt";
 
     FILE *input_file = fopen(filename, "r");
@@ -41,6 +48,12 @@ int sighan()
 
 void init()
 {
+    /*
+    Esta funcionn se ejecuta al inicio del programa, nos ayuda a escribir
+    y/o sobre escribir en el archivo signals.txt.
+    Esto nos ayuda a que cuando la funcion sighan se ejecuta sepa que todavia no se ejecuta
+    el comando "shutdown".
+    */
     char str[5];
     sprintf(str, "%d", 0);
     const char *filename = "signals.txt";
@@ -73,6 +86,10 @@ int main()
             exit(1);
         }
     }
+    /*
+    Este ciclio while nos ayuda a siempre mantener las ventanas getty abiertas
+    cuando se cierran o de ejecuta CTRL + C.
+    */
     while (1)
     {
 
@@ -92,8 +109,11 @@ int main()
             }
         }
     }
-
-    // system("killall xterm");
+    /*
+    Borra las ventanas desplegadas por xterm,
+    para esto ejecutamos el comando killall el cual mata a todos
+    los procesos llamadas xterm.
+    */
     p = fork();
     if (p == 0)
     {

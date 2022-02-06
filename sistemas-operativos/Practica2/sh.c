@@ -10,7 +10,12 @@ enum
 {
     MAXLINE = 256
 };
-
+/*
+Esta funcion nos ayuda a escribir un 15 en el archivo signals.txt
+esto nos ayuda a ver cuando se ejecuta en el comando shutdown en el
+shell creado, de esta foma el programa init.c se da cuenta cuando es
+necesario acabar con todo el programa.
+*/
 void sigint_handler(int sig)
 {
     char str[5];

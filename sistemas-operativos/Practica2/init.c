@@ -11,15 +11,7 @@
 
 volatile sig_atomic_t done = 0;
 
-void proc(int n);
-
-void term(int signum)
-{
-    printf("Caught!\n");
-    done = 1;
-}
-
-void sighan()
+int sighan()
 {
     const char *filename = "signals.txt";
 
@@ -41,16 +33,10 @@ void sighan()
 
     if (validador[0] == '1' && validador[1] == '5')
     {
-            kill(getppid(), SIGTERM);
-            execlp("killall xterm", "killall xterm", NULL);
-            exit(0);
-    }
-    else
-    {
-        printf("Señal recibida\n");
-        printf("No es 15\n");
+        return 1;
     }
     free(validador);
+    return 0;
 }
 
 void init()
@@ -67,13 +53,13 @@ void init()
     }
 
     fwrite(str, 1, strlen(str), output_file);
-    printf("Done Writing!\n");
 
     fclose(output_file);
 }
 int main()
 {
     init();
+    int flag = 0;
     int i;
     pid_t p;
     int status;
@@ -83,7 +69,6 @@ int main()
         p = fork();
         if (p == 0)
         {
-            printf("%d\n", getppid());
             execlp("xterm", "xterm", "-e", "./getty", NULL);
             exit(1);
         }
@@ -95,13 +80,30 @@ int main()
         if (temp > 0)
         {
 
+            if (sighan())
+            {
+                break;
+            }
             p = fork();
             if (p == 0)
             {
-                sighan();
                 execlp("xterm", "xterm", "-e", "./getty", NULL);
                 exit(1);
             }
         }
     }
+
+    // system("killall xterm");
+    p = fork();
+    if (p == 0)
+    {
+        execlp("killall", "killall", "xterm", NULL);
+        exit(10);
+    }
+
+    wait(&status);
+
+    printf("Fin!! :D\n");
+
+    return 0;
 }

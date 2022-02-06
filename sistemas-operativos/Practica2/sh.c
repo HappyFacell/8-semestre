@@ -15,8 +15,6 @@ void sigint_handler(int sig)
 {
     char str[5];
     sprintf(str, "%d", sig);
-    printf("killing process %d\n", getppid());
-    printf("Signal: %d\n", sig);
     const char *filename = "signals.txt";
 
     FILE *output_file = fopen(filename, "w+");
@@ -27,8 +25,6 @@ void sigint_handler(int sig)
     }
 
     fwrite(str, 1, strlen(str), output_file);
-    printf("Done Writing!\n");
-
     fclose(output_file);
     kill(getppid(), sig);
 }
@@ -62,7 +58,7 @@ int main(int argc, char *argv[])
             exit(127);
             break;
         }
-        if (strcmp(buf, "Shutdown") == 0)
+        if (strcmp(buf, "shutdown") == 0)
         {
             kill(getpid(), SIGTERM);
             break;

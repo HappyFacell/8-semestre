@@ -22,7 +22,6 @@ void login()
 void sighan(int s)
 {
     kill(getppid(), SIGTERM);
-    printf("%d\n", s);
 }
 
 int main()
@@ -32,7 +31,6 @@ int main()
     char c;
 
     int iterator;
-    printf("%d\n", getppid());
     do
     {
         char u[20];

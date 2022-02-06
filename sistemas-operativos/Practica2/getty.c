@@ -28,21 +28,21 @@ int main()
 {
     signal(SIGTERM, sighan);
     FILE *fptr;
-    char c;
+    char file_content;
 
     int iterator;
     do
     {
-        char u[20];
-        char p[20];
-        char cu[20];
-        char cp[20];
+        char user[20];
+        char password[20];
+        char correct_user[20];
+        char correct_password[20];
         printf("\nLogin:");
-        scanf("%s", u);
+        scanf("%s", user);
         fflush(stdout);
 
         printf("\nPassword:");
-        scanf("%s", p);
+        scanf("%s", password);
         fflush(stdout);
 
         if ((fptr = fopen("passwd.txt", "r")) == NULL)
@@ -51,45 +51,45 @@ int main()
             exit(0);
         }
 
-        c = fgetc(fptr);
-        while (c != EOF)
+        file_content = fgetc(fptr);
+        while (file_content != EOF)
         {
             iterator = 0;
-            while (c != 58)
+            while (file_content != 58)
             {
-                if (c == EOF)
+                if (file_content == EOF)
                 {
                     break;
                 }
-                if (c != '\n')
+                if (file_content != '\n')
                 {
-                    cu[iterator] = c;
+                    correct_user[iterator] = file_content;
                     iterator++;
-                    c = fgetc(fptr);
+                    file_content = fgetc(fptr);
                 }
             }
-            cu[iterator] = '\0';
+            correct_user[iterator] = '\0';
 
-            if (c == EOF)
+            if (file_content == EOF)
             {
                 break;
             }
-            c = fgetc(fptr);
+            file_content = fgetc(fptr);
             iterator = 0;
 
-            while (c != '\n')
+            while (file_content != '\n')
             {
-                if (c == EOF)
+                if (file_content == EOF)
                 {
                     break;
                 }
-                cp[iterator] = c;
+                correct_password[iterator] = file_content;
                 iterator++;
-                c = fgetc(fptr);
+                file_content = fgetc(fptr);
             }
-            cp[iterator] = '\0';
-            c = fgetc(fptr);
-            if (strcmp(u, cu) == 0 && strcmp(p, cp) == 0)
+            correct_password[iterator] = '\0';
+            file_content = fgetc(fptr);
+            if (strcmp(user, correct_user) == 0 && strcmp(password, correct_password) == 0)
             {
                 login();
             }

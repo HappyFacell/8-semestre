@@ -13,16 +13,16 @@ int C[TAM][TAM];
 
 void *tfunc(void *args)
 {
-	int nthread=*((int *) args);
-	int i,j,k;
-	int inicio=nthread*(TAM/NTHREADS);
-	int fin=(nthread+1)*(TAM/NTHREADS);
+	int nthread = *((int *)args);
+	int i, j, k;
+	int inicio = nthread * (TAM / NTHREADS);
+	int fin = (nthread + 1) * (TAM / NTHREADS);
 	
-	for(i=inicio;i<fin;i++)
-		for(k=0;k<TAM;k++)
-			for(j=0;j<TAM;j++)
-				C[i][j]=C[i][j]+A[i][k]*B[k][j];
-
+	printf("Hilo %d, inicio = %d, fin = %d\n", nthread, inicio, fin);
+	for (i = nthread; i < TAM; i+= NTHREADS)
+		for (k = 0; k < TAM; k++)
+			for (j = 0; j < TAM; j++)
+				C[i][j] = C[i][j] + A[i][k] * B[k][j];
 }
 
 int main()
@@ -40,19 +40,19 @@ int main()
 	start_ts = ts.tv_sec; // Tiempo inicial
 
 	// Crear los hilos
-	for(i=0;i<NTHREADS;i++)
+	for (i = 0; i < NTHREADS; i++)
 	{
-		parArr[i]=i;
-		pthread_create(&tid[i],NULL,tfunc,(void *) &parArr[i]);
+		parArr[i] = i;
+		pthread_create(&tid[i], NULL, tfunc, (void *)&parArr[i]);
 	}
-	
-	for(i=0;i<NTHREADS;i++)
-		pthread_join(tid[i],NULL);
-	
+
+	for (i = 0; i < NTHREADS; i++)
+		pthread_join(tid[i], NULL);
+
 	gettimeofday(&ts, NULL);
 	stop_ts = ts.tv_sec; // Tiempo final
 
 	elapsed_time = stop_ts - start_ts;
 	printf("------------------------------\n");
-	printf("TIEMPO TOTAL, %d segundos\n",(int) elapsed_time);
+	printf("TIEMPO TOTAL, %d segundos\n", (int)elapsed_time);
 }

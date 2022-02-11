@@ -1,29 +1,17 @@
+#include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
 
-int main(void) {
-    const char* filename = "signals.txt";
+int main()
+{
+    double number, squareRoot;
 
-    FILE* input_file = fopen(filename, "r");
-    if (!input_file)
-        exit(EXIT_FAILURE);
+    printf("Enter a number: ");
+    scanf("%lf", &number);
 
-    struct stat sb;
-    if (stat(filename, &sb) == -1) {
-        perror("stat");
-        exit(EXIT_FAILURE);
-    }
+    // computing the square root
+    squareRoot = sqrt(number);
 
-    char* file_contents = malloc(sb.st_size);
-    fread(file_contents, sb.st_size, 1, input_file);
+    printf("Square root of %.2lf =  %.2lf", number, squareRoot);
 
-    
-
-    fclose(input_file);
-	printf("%s\n", file_contents);
-    free(file_contents);
-
-    exit(EXIT_SUCCESS);
+    return 0;
 }

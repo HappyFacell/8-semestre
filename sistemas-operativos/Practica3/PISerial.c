@@ -1,21 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <math.h>
 
 double calcularPi(double iteraciones)
 {
-    double numerador = 4;
-    double denominador = 1;
+    long int i;
+
+    double aux;
     double pi = 0;
-    int x = 0;
-    int operador = 1;
-    for (x; x < iteraciones; x++)
+
+    for (i = 0; i < iteraciones; i++)
     {
-        pi += operador * (numerador / denominador);
-        denominador += 2;
-        operador *= -1;
+        aux = pow(-1, i) / (2 * i + 1);
+
+        pi += aux;
     }
-    return pi;
+    return pi * 4;
 }
 
 int main()
@@ -23,7 +24,6 @@ int main()
     long long start_ts;
     long long stop_ts;
     long long elapsed_time;
-    long lElapsedTime;
     struct timeval ts;
     double iteraciones = 2000000000;
     gettimeofday(&ts, NULL);

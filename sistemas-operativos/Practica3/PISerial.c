@@ -25,12 +25,10 @@ int main()
 }
 double calcularPi(double iteraciones)
 {
-    long int i;
-
     double aux;
     double pi = 0;
 
-    for (i = 0; i < iteraciones; i++)
+    for (int i = 0; i < iteraciones; i++)
     {
         aux = pow(-1, i) / (2 * i + 1);
 

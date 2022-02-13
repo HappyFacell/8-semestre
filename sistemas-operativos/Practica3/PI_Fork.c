@@ -3,12 +3,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <math.h>
-
 #include <sys/shm.h>
 #include <sys/wait.h>
 
 #define ITERACIONES 2000000000
-// lscpu para revisar en numero de CPUs, por lo que dio como resultado 4
 #define NPROCS 4
 
 void calcularPi(int n_arg);
@@ -19,8 +17,7 @@ int main()
 
     long long start_ts;
     long long stop_ts;
-    int elapsed_time;
-    long lElapsedTime;
+    long long elapsed_time;
     struct timeval ts;
 
     int i;
@@ -31,7 +28,7 @@ int main()
     int pid;
 
     gettimeofday(&ts, NULL);
-    start_ts = ts.tv_sec * 1000000 + ts.tv_usec; // Tiempo inicial
+    start_ts = ts.tv_sec; // Tiempo inicial
 
     shmid = shmget(0x1234, NPROCS * sizeof(double), IPC_CREAT | 0666); // Obtener memoria compartida
     if (shmid < 0)
@@ -61,16 +58,15 @@ int main()
     }
 
     gettimeofday(&ts, NULL);
-    stop_ts = ts.tv_sec * 1000000 + ts.tv_usec; // Tiempo final
-
-    printf("Resultado: %lf\n", pi);
+    stop_ts = ts.tv_sec; // Tiempo final
+    elapsed_time = stop_ts - start_ts;
 
     pi = pi * 4;
 
-    printf("variable pi: %lf\n", pi);
+    printf("PI = %1.20lf\n", pi);
 
-    elapsed_time = (int)(stop_ts - start_ts);
-    printf("proceso %d, %d microsegundos\n", getpid(), elapsed_time);
+    printf("------------------------------\n");
+    printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
 
     shmdt(sharedmem);
     shmctl(shmid, IPC_RMID, NULL);

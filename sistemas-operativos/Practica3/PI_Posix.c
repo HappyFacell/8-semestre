@@ -28,11 +28,13 @@ int main()
     gettimeofday(&ts, NULL);
     start_ts = ts.tv_sec; // Tiempo inicial
 
+    pthread_mutex_init(&g_cs, NULL);
     for (i = 0; i < NTHREADS; i++)
     {
         args[i] = i;
         pthread_create(&tid[i], NULL, pi_thread, &args[i]);
     }
+    pthread_mutex_destroy(&g_cs);
 
     for (i = 0; i < NTHREADS; i++)
     {
@@ -53,20 +55,18 @@ int main()
     return 0;
 }
 
-void *pi_thread(void *n_arg)
+void *pi_thread(void *args)
 {
-    int i;
-    int num = *((int *)n_arg);
-
-    double num_elevado;
-    double sum;
-    int start = num * (ITERACIONES / NTHREADS);
+    int nthread = *((int *)args);
+    double aux;
+    int start = nthread * (ITERACIONES / NTHREADS);
     int end = start + (ITERACIONES / NTHREADS);
 
-    for (i = start; i < end; i++)
+    for (int i = start; i < end; i++)
     {
-        num_elevado = pow(-1, i);
-        sum += (num_elevado / (2 * i + 1));
+        aux += (pow(-1, i) / (2 * i + 1));
     }
-    sum += sum;
+    pthread_mutex_lock(&g_cs);
+    sum += aux;
+    pthread_mutex_unlock(&g_cs);
 }

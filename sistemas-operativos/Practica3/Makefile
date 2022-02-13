@@ -1,6 +1,6 @@
 #Este programa compila todos los programas que necesita la
 #practica 3
-start: PISerial.c PI_Posix.c
+start: PISerial.c PI_Posix.c PI_Fork.c
 	gcc -o PISerial PISerial.c -lm
 	gcc -o PI_Posix PI_Posix.c -lpthread -lm
 	gcc -o PI_Fork PI_Fork.c -lm

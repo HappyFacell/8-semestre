@@ -19,7 +19,7 @@ int main()
     gettimeofday(&ts, NULL);
     stop_ts = ts.tv_sec; // Tiempo final
     elapsed_time = stop_ts - start_ts;
-    printf("PI = %lf\n", pi);
+    printf("PI = %1.20lf\n", pi);
     printf("------------------------------\n");
     printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
 }

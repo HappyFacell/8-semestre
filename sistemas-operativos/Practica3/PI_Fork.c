@@ -21,15 +21,14 @@ int main()
     struct timeval ts;
 
     int i;
-    long num;
     double pi;
     int status;
-    int shmid;
     int pid;
+    int shmid;
 
     gettimeofday(&ts, NULL);
     start_ts = ts.tv_sec; // Tiempo inicial
-    
+
     // Se emplea en la creación o acceso a una zona de memoria compartida
     shmid = shmget(0x1234, NPROCS * sizeof(double), IPC_CREAT | 0660); // Obtener memoria compartida
     //-1 si ha habido error
@@ -79,7 +78,7 @@ int main()
     stop_ts = ts.tv_sec; // Tiempo final
     elapsed_time = stop_ts - start_ts;
 
-    printf("PI = %lf\n", pi);
+    printf("PI = %1.20lf\n", pi);
 
     printf("------------------------------\n");
     printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);

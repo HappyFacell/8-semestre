@@ -9,8 +9,8 @@
 #define ITERACIONES 2000000000
 #define NPROCS 4
 
-void calcularPi(int n_arg);
-double *sharedmem;
+void pi_fork(int args);
+double *SharedMemSum;
 
 int main()
 {
@@ -29,14 +29,22 @@ int main()
 
     gettimeofday(&ts, NULL);
     start_ts = ts.tv_sec; // Tiempo inicial
-
-    shmid = shmget(0x1234, NPROCS * sizeof(double), IPC_CREAT | 0666); // Obtener memoria compartida
+    
+    // Se emplea en la creación o acceso a una zona de memoria compartida
+    shmid = shmget(0x1234, NPROCS * sizeof(double), IPC_CREAT | 0660); // Obtener memoria compartida
+    //-1 si ha habido error
     if (shmid < 0)
     {
         fprintf(stderr, "Error al obtener memoria compartida\n");
         exit(1);
     }
-    sharedmem = shmat(shmid, NULL, 0);
+    /*
+    Para acceder a memoria compartida previamente creada,
+    es necesario que alguna variable del
+    proceso «apunte» a esa zona de memoria que no pertenece a
+    su espacio de direccionamiento.
+    */
+    SharedMemSum = shmat(shmid, NULL, 0);
 
     // fork para cada proceso heredan  la variable que esta conectada a la memoria compartida
     for (i = 0; i < NPROCS; i++)
@@ -44,7 +52,7 @@ int main()
         pid = fork();
         if (pid == 0)
         {
-            calcularPi(i);
+            pi_fork(i);
         }
     }
 
@@ -54,42 +62,45 @@ int main()
     }
     for (i = 0; i < NPROCS; i++)
     {
-        pi += sharedmem[i];
+        pi += SharedMemSum[i];
     }
+    pi = pi * 4;
+
+    /*
+        separa del espacio de direcciones del
+        proceso de llamada el segmento de memoria
+        compartida ubicado en la dirección
+        */
+    shmdt(SharedMemSum);
+    // liberar la memoria compartida
+    shmctl(shmid, IPC_RMID, NULL);
 
     gettimeofday(&ts, NULL);
     stop_ts = ts.tv_sec; // Tiempo final
     elapsed_time = stop_ts - start_ts;
 
-    pi = pi * 4;
-
-    printf("PI = %1.20lf\n", pi);
+    printf("PI = %lf\n", pi);
 
     printf("------------------------------\n");
     printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
 
-    shmdt(sharedmem);
-    shmctl(shmid, IPC_RMID, NULL);
-
     return 0;
 }
 
-void calcularPi(int n_arg)
+void pi_fork(int args)
 {
     int i;
-    int num = n_arg;
+    int nprocs = args;
 
-    double num_elevado;
-    double sum = 0.0;
-    int start = num * (ITERACIONES / NPROCS);
+    double sum = 0;
+    int start = nprocs * (ITERACIONES / NPROCS);
     int end = start + (ITERACIONES / NPROCS);
 
     for (i = start; i < end; i++)
     {
-        num_elevado = pow(-1, i);
-        sum += (num_elevado / (2 * i + 1));
+        sum += (pow(-1, i) / (2 * i + 1));
     }
 
-    sharedmem[num] = sum;
+    SharedMemSum[nprocs] = sum;
     exit(1);
 }

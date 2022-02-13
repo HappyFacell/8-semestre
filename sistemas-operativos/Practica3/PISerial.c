@@ -19,20 +19,19 @@ int main()
     gettimeofday(&ts, NULL);
     stop_ts = ts.tv_sec; // Tiempo final
     elapsed_time = stop_ts - start_ts;
-    printf("PI = %1.20lf\n", pi);
+    printf("PI = %lf\n", pi);
     printf("------------------------------\n");
     printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
 }
 double calcularPi(double iteraciones)
 {
-    double aux;
-    double pi = 0;
+    int i;
+    double sum = 0;
+    double num_elevado, pi;
 
-    for (int i = 0; i < iteraciones; i++)
+    for (i = 0; i < ITERACIONES; i++)
     {
-        aux = pow(-1, i) / (2 * i + 1);
-
-        pi += aux;
+        pi += (pow(-1, i) / (2 * i + 1));
     }
     return pi * 4;
 }

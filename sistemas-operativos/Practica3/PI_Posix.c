@@ -47,7 +47,7 @@ int main()
 
     pi = sum * 4;
 
-    printf("PI = %1.20lf\n", pi);
+    printf("PI = %lf\n", pi);
 
     printf("------------------------------\n");
     printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);

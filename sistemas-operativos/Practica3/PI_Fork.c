@@ -23,7 +23,7 @@ int main()
     int i;
     double pi;
     int status;
-    int pid;
+    pid_t pid;
     int shmid;
 
     gettimeofday(&ts, NULL);

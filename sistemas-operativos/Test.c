@@ -3,15 +3,16 @@
 
 int main()
 {
-    double number, squareRoot;
-
-    printf("Enter a number: ");
-    scanf("%lf", &number);
-
-    // computing the square root
-    squareRoot = sqrt(number);
-
-    printf("Square root of %.2lf =  %.2lf", number, squareRoot);
+    printf("Hola mundo\n");
+    int temp = 0;
+    if (temp == 0)
+    {
+        printf("Es 0\n");
+    }
+    else {
+        printf("No es 0\n");
+    }
+    
 
     return 0;
 }

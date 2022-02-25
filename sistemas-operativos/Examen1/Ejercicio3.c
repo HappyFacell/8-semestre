@@ -2,33 +2,34 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+
 int main(int argc, char *argv[])
 {
-    int n = strtol(argv[1], NULL, 10);
-    int i;
-    int p;
-    if (n > 0)
+    int n;
+    pid_t p;
+    if (argc < 2)
     {
-        printf("%d\n", 0);
-        p = fork();
-        for (i = 1; i <= n; i++)
-        {
-            // p = fork();
-            if (p == 0)
-            {
-                printf("%d\n", i);
-                p = fork();
-                if (p != 0)
-                {
-                    exit(0);
-                }
-            }
-            wait(NULL);
-        }
+        n = 0;
     }
     else
     {
-        printf("%d\n", 0);
+        n = atoi(argv[1]);
+    }
+
+    p = fork();
+    for (int i = 0; i <= n; i++)
+    {
+        // p = fork();
+        if (p == 0)
+        {
+            printf("%d\n", i);
+            p = fork();
+            if (p != 0)
+            {
+                exit(0);
+            }
+        }
+        wait(NULL);
     }
     return 0;
 }

@@ -11,8 +11,10 @@
 pthread_mutex_t g_cs;
 
 int totalSum = 0;
+int max;
+int min;
 
-void *calcularPrimos(void *n_arg);
+void *calcularPrimos(void *args);
 int isprime(int n);
 
 struct argus
@@ -27,6 +29,7 @@ int main(int argc, char *argv[])
 
     struct argus argsx;
     pthread_t tid[NTHREADS];
+    int args[NTHREADS];
 
     long long start_ts;
     long long stop_ts;
@@ -34,8 +37,8 @@ int main(int argc, char *argv[])
     long lElapsedTime;
     struct timeval ts;
 
-    int min = atoi(argv[1]);
-    int max = atoi(argv[2]);
+    min = atoi(argv[1]);
+    max = atoi(argv[2]);
     argsx.min = min;
     argsx.max = max;
 
@@ -49,7 +52,8 @@ int main(int argc, char *argv[])
     for (int i = 0; i < NTHREADS; i++)
     {
         argsx.i = i;
-        pthread_create(&tid[i], NULL, calcularPrimos, &argsx.i);
+        args[i] = i;
+        pthread_create(&tid[i], NULL, calcularPrimos, &args[i]);
     }
     pthread_mutex_destroy(&g_cs);
 
@@ -67,22 +71,23 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-void *calcularPrimos(void *n_arg)
+void *calcularPrimos(void *args)
 {
-    struct argus *argsx = n_arg;
+    int nthread = *((int *)args);
 
-    int count = 0;
-    int start = argsx->i * (argsx->min / NTHREADS); //1 
-    int end = start + (argsx->max / NTHREADS);
+    int start = nthread * (max / NTHREADS); // 1
+    int end = (nthread + 1) * (max / NTHREADS);
 
-    for (int i = start; i <= end; i++)
+    for (int i = nthread; i <= max; i += NTHREADS)
     {
+        pthread_mutex_lock(&g_cs);
         if (isprime(i))
         {
-            pthread_mutex_lock(&g_cs);
+            // printf("Numero primo? = %d\n", i);
             totalSum++;
-            pthread_mutex_unlock(&g_cs);
+            // printf("Total suma = %d\n", totalSum);
         }
+        pthread_mutex_unlock(&g_cs);
     }
 }
 

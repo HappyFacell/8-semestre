@@ -4,13 +4,29 @@
 #include <sys/wait.h>
 #include <math.h>
 #include <sys/time.h>
+#include <pthread.h>
 
+#define NUM_THREADS 4
+
+pthread_mutex_t g_cs;
+
+int g_sum = 0;
+
+void *calcularPrimos(void *n_arg);
 int isprime(int n);
+
+struct argus
+{
+    int i;
+    int min;
+    int max;
+};
 
 int main(int argc, char *argv[])
 {
 
-    int count = 0;
+    struct argus argsx;
+    pthread_t threads[NUM_THREADS];
 
     long long start_ts;
     long long stop_ts;
@@ -20,24 +36,54 @@ int main(int argc, char *argv[])
 
     int min = atoi(argv[1]);
     int max = atoi(argv[2]);
+    argsx.min = min;
+    argsx.max = max;
+
     printf("min: %d max: %d\n", min, max);
-    /* Generating and counting prime numbers */
+
     gettimeofday(&ts, NULL);
     start_ts = ts.tv_sec; // Tiempo inicial
-    for (int i = min; i <= max; i++)
+
+    pthread_mutex_init(&g_cs, NULL);
+    long num;
+    for (int i = 0; i < NUM_THREADS; i++)
     {
-        if (isprime(i))
-        {
-            count++;
-        }
+        argsx.i = i;
+        pthread_create(&threads[i], NULL, calcularPrimos, &argsx.i);
     }
+    pthread_mutex_destroy(&g_cs);
+
+    for (int i = 0; i < NUM_THREADS; i++)
+    {
+        pthread_join(threads[i], NULL);
+    }
+
     gettimeofday(&ts, NULL);
     stop_ts = ts.tv_sec; // Tiempo final
     elapsed_time = stop_ts - start_ts;
     printf("------------------------------\n");
     printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
-    printf("\n Num primos = %d\n", count);
+    printf("\n Num primos = %d\n", g_sum);
     return 0;
+}
+
+void *calcularPrimos(void *n_arg)
+{
+    struct argus *argsx = n_arg;
+
+    int count = 0;
+    int start = argsx->i * (argsx->min / NUM_THREADS);
+    int end = start + (argsx->max / NUM_THREADS);
+
+    for (int i = start; i <= end; i++)
+    {
+        if (isprime(i))
+        {
+            pthread_mutex_lock(&g_cs);
+            g_sum++;
+            pthread_mutex_unlock(&g_cs);
+        }
+    }
 }
 
 int isprime(int n)

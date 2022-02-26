@@ -8,6 +8,8 @@ extern int unblockevent;
 QUEUE ready;
 QUEUE waitinginevent[MAXTHREAD];
 
+int count = 0;
+
 void scheduler(int arguments)
 {
 	int old, next;
@@ -45,12 +47,24 @@ void scheduler(int arguments)
 		_enqueue(&ready, callingthread);
 	}
 
+	if (event == TIMER)
+	{
+		count++;
+		if (count >= 2)
+		{ // q=2
+			threads[callingthread].status = READY;
+			_enqueue(&ready, callingthread);
+			changethread = 1;
+		}
+	}
+
 	if (changethread)
 	{
 		old = currthread;
 		next = _dequeue(&ready);
-
 		threads[next].status = RUNNING;
 		_swapthreads(old, next);
+
+		count = 0;
 	}
 }

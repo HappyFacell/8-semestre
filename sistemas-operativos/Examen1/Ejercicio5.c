@@ -4,41 +4,58 @@
 #include <sys/wait.h>
 #include <math.h>
 #include <sys/time.h>
+
+int isprime(int n);
+
 int main(int argc, char *argv[])
 {
     int min, max, temp, count = 0, i, j;
+
     long long start_ts;
     long long stop_ts;
-    int elapsed_time;
+    long long elapsed_time;
     long lElapsedTime;
     struct timeval ts;
+
     min = strtol(argv[1], NULL, 10);
     max = strtol(argv[2], NULL, 10);
     printf("min: %d max: %d\n", min, max);
     /* Generating and counting prime numbers */
     gettimeofday(&ts, NULL);
-    start_ts = ts.tv_sec * 1000000 + ts.tv_usec; // Tiempo inicial
+    start_ts = ts.tv_sec; // Tiempo inicial
     for (i = min; i <= max; i++)
     {
-        temp = 0;
-        for (j = 2; j <= i / 2; j++)
+        if (isprime(i))
         {
-            if (i % j == 0)
-            {
-                temp = 1;
-                break;
-            }
-        }
-        if (temp == 0 && i >= 2)
-        {
-
             count++;
         }
     }
     gettimeofday(&ts, NULL);
-    stop_ts = ts.tv_sec * 1000000 + ts.tv_usec; // Tiempo final
-    elapsed_time = (int)(stop_ts - start_ts);
-    printf("proceso %d, %d microsegundos\n", getpid(), elapsed_time);
+    stop_ts = ts.tv_sec; // Tiempo final
+    elapsed_time = stop_ts - start_ts;
+    printf("------------------------------\n");
+    printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
     printf("\n Num primos = %d\n", count);
     return 0;
+}
+
+int isprime(int n)
+{
+    int d = 3;
+    int prime = 0;
+    int limit = sqrt(n);
+
+    if (n < 2)
+        prime = 0;
+    else if (n == 2)
+        prime = 1;
+    else if (n % 2 == 0)
+        prime = 0;
+    else
+    {
+        while (d <= limit && n % d)
+            d += 2;
+        prime = d > limit;
+    }
+    return (prime);
 }

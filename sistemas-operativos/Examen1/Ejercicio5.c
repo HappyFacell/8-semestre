@@ -6,30 +6,22 @@
 #include <sys/time.h>
 int main(int argc, char *argv[])
 {
+    int min, max, temp, count = 0, i, j;
     long long start_ts;
-	long long stop_ts;
-	long long elapsed_time;
-	long lElapsedTime;
-	struct timeval ts;
-
-    int min; 
-    int max;
-    int temp;
-    int count = 0;
-
-
+    long long stop_ts;
+    int elapsed_time;
+    long lElapsedTime;
+    struct timeval ts;
     min = strtol(argv[1], NULL, 10);
     max = strtol(argv[2], NULL, 10);
     printf("min: %d max: %d\n", min, max);
-
     /* Generating and counting prime numbers */
     gettimeofday(&ts, NULL);
-	start_ts = ts.tv_sec; // Tiempo inicial
-
-    for (int i = min; i <= max; i++)
+    start_ts = ts.tv_sec * 1000000 + ts.tv_usec; // Tiempo inicial
+    for (i = min; i <= max; i++)
     {
         temp = 0;
-        for (int j = 2; j <= i / 2; j++)
+        for (j = 2; j <= i / 2; j++)
         {
             if (i % j == 0)
             {
@@ -44,11 +36,9 @@ int main(int argc, char *argv[])
         }
     }
     gettimeofday(&ts, NULL);
-    stop_ts = ts.tv_sec; // Tiempo final
-    elapsed_time = stop_ts - start_ts;
-
-    printf("------------------------------\n");
-    printf("TIEMPO TOTAL, %lld segundos\n", elapsed_time);
+    stop_ts = ts.tv_sec * 1000000 + ts.tv_usec; // Tiempo final
+    elapsed_time = (int)(stop_ts - start_ts);
+    printf("proceso %d, %d microsegundos\n", getpid(), elapsed_time);
     printf("\n Num primos = %d\n", count);
     return 0;
 }

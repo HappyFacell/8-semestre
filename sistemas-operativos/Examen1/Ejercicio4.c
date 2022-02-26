@@ -18,12 +18,12 @@ int main()
     }
     if (p != 0)
     {
-        printf("Dormi 10 seg\n");
+        printf("Dormi 10 segundos\n");
         sleep(10);
     }
     else if (p == 0)
     {
-        printf("Dormi 5 seg\n");
+        printf("Dormi 5 segundos\n");
         sleep(5);
     }
 

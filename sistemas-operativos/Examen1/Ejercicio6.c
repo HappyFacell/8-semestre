@@ -17,17 +17,10 @@ int min;
 void *calcularPrimos(void *args);
 int isprime(int n);
 
-struct argus
-{
-    int i;
-    int min;
-    int max;
-};
 
 int main(int argc, char *argv[])
 {
 
-    struct argus argsx;
     pthread_t tid[NTHREADS];
     int args[NTHREADS];
 
@@ -39,8 +32,6 @@ int main(int argc, char *argv[])
 
     min = atoi(argv[1]);
     max = atoi(argv[2]);
-    argsx.min = min;
-    argsx.max = max;
 
     printf("min: %d max: %d\n", min, max);
 
@@ -51,7 +42,6 @@ int main(int argc, char *argv[])
     long num;
     for (int i = 0; i < NTHREADS; i++)
     {
-        argsx.i = i;
         args[i] = i;
         pthread_create(&tid[i], NULL, calcularPrimos, &args[i]);
     }
@@ -76,19 +66,19 @@ void *calcularPrimos(void *args)
     int nthread = *((int *)args);
 
     int start = nthread * (max / NTHREADS); // 1
-    int end = (nthread + 1) * (max / NTHREADS);
+    int end = nthread + (max / NTHREADS);
+    int count = 0;
 
     for (int i = nthread; i <= max; i += NTHREADS)
     {
-        pthread_mutex_lock(&g_cs);
         if (isprime(i))
         {
-            // printf("Numero primo? = %d\n", i);
-            totalSum++;
-            // printf("Total suma = %d\n", totalSum);
+            count++;
         }
-        pthread_mutex_unlock(&g_cs);
     }
+    pthread_mutex_lock(&g_cs);
+    totalSum += count;
+    pthread_mutex_unlock(&g_cs);
 }
 
 int isprime(int n)

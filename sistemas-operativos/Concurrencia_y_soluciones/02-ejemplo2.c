@@ -14,15 +14,15 @@ void myprint(char *s)
 
 void *p(void *args)
 {
-	myprint("A");
-	myprint("B");
-	myprint("C");
+	myprint("A\n");
+	myprint("B\n");
+	myprint("C\n");
 }
 
 void *q(void *args)
 {
-	myprint("\tD");
-	myprint("\tE");
+	myprint("\tD\n");
+	myprint("\tE\n");
 
 }
 

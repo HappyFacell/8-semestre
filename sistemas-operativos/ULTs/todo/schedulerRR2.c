@@ -49,9 +49,10 @@ void scheduler(int arguments)
 
 	if (event == TIMER)
 	{
+		//quantum=2
 		count++;
 		if (count >= 2)
-		{ // q=2
+		{
 			threads[callingthread].status = READY;
 			_enqueue(&ready, callingthread);
 			changethread = 1;

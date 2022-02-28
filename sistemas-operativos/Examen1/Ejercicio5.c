@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     int min = atoi(argv[1]);
     int max = atoi(argv[2]);
     printf("min: %d max: %d\n", min, max);
-    /* Generating and counting prime numbers */
+    
     gettimeofday(&ts, NULL);
     start_ts = ts.tv_sec; // Tiempo inicial
     for (int i = min; i <= max; i++)

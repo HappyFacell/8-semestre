@@ -9,7 +9,7 @@ extern int unblockevent;
 QUEUE ready[MAXTHREAD]; // cola de queues
 QUEUE waitinginevent[MAXTHREAD];
 
-int count = 0; // Num hilos
+int count_thread = 0; // Num hilos
 
 void scheduler(int arguments)
 {
@@ -27,7 +27,7 @@ void scheduler(int arguments)
 		// Un nuevo hilo va a la cola de listos
 		threads[callingthread].status = READY;
 		_enqueue(&ready[0], callingthread);
-		count++;
+		count_thread++;
 	}
 
 	if (event == BLOCKTHREAD)
@@ -43,7 +43,7 @@ void scheduler(int arguments)
 	{
 		threads[callingthread].status = END;
 		changethread = 1;
-		count--; // Quitar hilo terminado
+		count_thread--; // Quitar hilo terminado
 	}
 
 	if (event == UNBLOCKTHREAD)
@@ -55,7 +55,7 @@ void scheduler(int arguments)
 	if (event == TIMER)
 	{
 
-		if (count != 0)
+		if (count_thread != 0)
 		{
 			if (priority + 1 < MAXTHREAD)
 			{

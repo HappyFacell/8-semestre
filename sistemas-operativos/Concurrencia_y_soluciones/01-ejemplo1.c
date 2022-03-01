@@ -3,8 +3,8 @@
 #include <unistd.h>
 #include <pthread.h>
 
-#define MAX 10000
-#define NTHREADS 4
+#define MAX 1000
+#define NTHREADS 2
 
 int g = 0;
 
@@ -26,5 +26,5 @@ int main()
 	for (i = 0; i < NTHREADS; i++)
 		pthread_join(tid[i], NULL);
 
-	printf("g=%d\n", g);
+	printf("g = %d\n", g);
 }

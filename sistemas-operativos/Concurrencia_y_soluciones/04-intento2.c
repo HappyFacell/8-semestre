@@ -12,45 +12,46 @@ void cs(int i);
 void rs();
 void x();
 
-int flag[NTHREADS]={FALSE,FALSE};
+int flag[NTHREADS] = {FALSE, FALSE};
 
 void *tfunc(void *args)
 {
-	int i=*((int *) args);
-	int j=1-i;
-	
+	int i = *((int *)args);
+	int j = 1 - i;
+
 	int n;
-	
-	for(n=0;n<10;n++)
+
+	for (n = 0; n < 10; n++)
 	{
-		rs();	
-		while(flag[j]); x();
-		flag[i]=TRUE;	
+		rs();
+		while (flag[j])
+			;
+		x();
+		flag[i] = TRUE;
 		cs(i);
-		flag[i]=FALSE;
+		flag[i] = FALSE;
 		rs();
 	}
-	
 }
 
 int main()
 {
 	int i;
 	pthread_t tid[NTHREADS];
-	int pargs[NTHREADS]={0,1};
-	
-	for(i=0;i<NTHREADS;i++)
-		pthread_create(&tid[i],NULL,tfunc,&pargs[i]);
-	
-	for(i=0;i<NTHREADS;i++)
-		pthread_join(tid[i],NULL);
+	int pargs[NTHREADS] = {0, 1};
+
+	for (i = 0; i < NTHREADS; i++)
+		pthread_create(&tid[i], NULL, tfunc, &pargs[i]);
+
+	for (i = 0; i < NTHREADS; i++)
+		pthread_join(tid[i], NULL);
 }
 
 void cs(int i)
 {
-	printf("%d entra a la sección crítica\n",i);
+	printf("%d entra a la sección crítica\n", i);
 	usleep(250000);
-	printf("%d sale de la sección crítica\n",i);
+	printf("%d sale de la sección crítica\n", i);
 }
 
 void rs()

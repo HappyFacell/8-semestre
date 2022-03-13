@@ -2,7 +2,6 @@
 #include <libsem.h>
 #include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 // Macro que incluye el código de la instrucción máquina xchg
 #define atomic_xchg(A, B) __asm__ __volatile__( \

@@ -3,40 +3,49 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-// Macro que incluye el código de la instrucción máquina xchg
+/*
+	La estructura del semáforo:
+	typedef struct {
+		int count;
+		QUEUE queue;
+	} SEMAPHORE;
+
+	Para acceder a sus elementos:
+	&SEMAPHORE->elemento
+*/
+
+// Macro que incluye el código de la instrucción máquina xchg que hace un intercambio atómico de dos variables.
 #define atomic_xchg(A, B) __asm__ __volatile__( \
 	"   lock xchg %1,%0 ;\n"                    \
 	: "=ir"(A)                                  \
 	: "m"(B), "ir"(A));
 
-int g = 0;
+int g;
+int l = 1;
+
+/*
+	Hay que inicializar la cola del semáforo s aquí utilizando la función de include/queues.h
+	llamada initqueue(QUEUE *q)
+*/
 
 void initsem(SEMAPHORE *s, int val)
 {
-	int l;
-	int g = 0;
-	l = 1;
-
-	do
-	{
-		atomic_xchg(l, g);
-	} while (l != 0);
+	g = 0;
 	initqueue(&s->queue);
 	s->count = val;
-
-	g = 0;
-	l = 1;
-
-	sleep(rand() % 3);
 }
 
+/*	Wait(s):
+		s.contador--;
+		if s.contador < 0 then
+		{
+			poner este proceso en s.queue;
+			bloquear este proceso
+		}
+*/
 void waitsem(SEMAPHORE *s)
 {
-	int l;
 
-	int g = 0;
-
-	l = 1;
 	do
 	{
 		atomic_xchg(l, g);
@@ -49,23 +58,18 @@ void waitsem(SEMAPHORE *s)
 		enqueue(&s->queue, tid);
 		block_thread();
 	}
-
-	g = 0;
-	l = 1;
-
-	sleep(rand() % 3);
 }
 
+/*	Signal(s):
+		s.contador++;
+		if s.contador <= 0
+		{
+			quitar un proceso P de s.queue;
+			poner el proceso p en la cola de listos
+		}
+*/
 void signalsem(SEMAPHORE *s)
 {
-	int l;
-	int g = 0;
-
-	l = 1;
-	do
-	{
-		atomic_xchg(l, g);
-	} while (l != 0);
 	s->count++;
 	pthread_t tid;
 
@@ -77,6 +81,4 @@ void signalsem(SEMAPHORE *s)
 
 	g = 0;
 	l = 1;
-
-	sleep(rand() % 3);
 }

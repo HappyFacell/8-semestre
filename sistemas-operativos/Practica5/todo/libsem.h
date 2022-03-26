@@ -7,3 +7,4 @@ typedef struct {
 void initsem(SEMAPHORE *s,int val);
 void waitsem(SEMAPHORE *s);
 void signalsem(SEMAPHORE *s);
+  

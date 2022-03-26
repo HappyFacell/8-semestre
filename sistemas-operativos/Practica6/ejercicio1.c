@@ -22,9 +22,11 @@ struct Args
     int max;
 };
 
-void productor(struct Args variables);
-void consumidor(int max);
-int isprime(int n);
+struct node
+{
+    int primNumber;
+    struct node *next;
+};
 
 struct STRBUFF
 {
@@ -33,23 +35,23 @@ struct STRBUFF
     char buffer[TAMBUFFER]; // Buffer circular
 };
 
-struct STRBUFF *bf;
-
-struct node
-{
-    int primNumber;
-    struct node *next;
-};
-
 typedef struct node primeNode;
 
 primeNode *createNode(int max);
-
-void addPrimeNumber(int num, int max);
-
-void printList();
-
 primeNode *head = NULL;
+
+
+struct STRBUFF *bf;
+
+void productor(struct Args variables);
+void consumidor(int max);
+int isprime(int n);
+void addPrimeNumber(int num, int max);
+void printList();
+void bubbleSort(primeNode *start);
+void swap(primeNode *a, primeNode *b);
+
+
 
 SEM_ID semarr;
 enum
@@ -108,12 +110,13 @@ int main(int argc, char *argv[])
 
     p = fork();
     if (p == 0)
+    {
         consumidor(max);
+        printList();
+    }
 
     for (n = 0; n <= NPRODS; n++)
         wait(NULL);
-
-    // printList();
 
     // Borrar los semáforos
 
@@ -201,14 +204,47 @@ void consumidor(int max)
 
 void printList()
 {
-    printf("Hola soy el print :3, %d\n", head->next->primNumber);
-
+    bubbleSort(head);
     head = head->next;
     while (head != NULL)
     {
         printf("%d\n", head->primNumber);
         head = head->next;
     }
+}
+void bubbleSort(primeNode *start)
+{
+    int swapped, i;
+    primeNode *ptr1;
+    primeNode *lptr = NULL;
+
+    /* Checking for empty list */
+    if (start == NULL)
+        return;
+
+    do
+    {
+        swapped = 0;
+        ptr1 = start;
+
+        while (ptr1->next != lptr)
+        {
+            if (ptr1->primNumber > ptr1->next->primNumber)
+            {
+                swap(ptr1, ptr1->next);
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+
+void swap(primeNode *a, primeNode *b)
+{
+    int temp = a->primNumber;
+    a->primNumber = b->primNumber;
+    b->primNumber = temp;
 }
 
 primeNode *createNode(int max)

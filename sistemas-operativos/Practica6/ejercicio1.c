@@ -7,7 +7,7 @@
 
 #include "semaphores.h"
 
-#define TAMBUFFER 8
+#define TAMBUFFER 10
 
 #define VELPROD 500000 // Microsegundos
 #define VELCONS 100000
@@ -37,21 +37,18 @@ struct STRBUFF
 
 typedef struct node primeNode;
 
-primeNode *createNode(int max);
+primeNode *createNode();
 primeNode *head = NULL;
-
 
 struct STRBUFF *bf;
 
 void productor(struct Args variables);
-void consumidor(int max);
+void consumidor();
 int isprime(int n);
-void addPrimeNumber(int num, int max);
+void addPrimeNumber(int num);
 void printList();
 void bubbleSort(primeNode *start);
 void swap(primeNode *a, primeNode *b);
-
-
 
 SEM_ID semarr;
 enum
@@ -94,8 +91,16 @@ int main(int argc, char *argv[])
     // printf("Semáforos creados\n");
 
     // Crear la memoria compartida
-    shmid = shmget((key_t)0x1235, sizeof(struct STRBUFF), 0666 | IPC_CREAT);
+    // Solicitar memoria compartida para el buffer
+    shmid = shmget((key_t)0x1234, sizeof(struct STRBUFF), 0666 | IPC_CREAT);
+    if (shmid == -1)
+    {
+        fprintf(stderr, "Error al solicitar memoria compartida\n");
+        exit(1);
+    }
     bf = shmat(shmid, NULL, 0);
+    bf->ent = 0;
+    bf->sal = 0;
 
     /* Aquí se crean los procesos */
     for (i = 0; i < NPRODS; i++)
@@ -111,8 +116,8 @@ int main(int argc, char *argv[])
     p = fork();
     if (p == 0)
     {
-        consumidor(max);
-        printList();
+        consumidor();
+
     }
 
     for (n = 0; n <= NPRODS; n++)
@@ -147,7 +152,7 @@ void productor(struct Args variables)
         if (isprime(n) || n == end)
         {
             semwait(semarr, E_MAX);   // Si se llena el buffer se bloquea
-            semwait(semarr, S_EXMUT); // Asegurar el buffer como sección crítoca
+            semwait(semarr, S_EXMUT); // Asegurar el buffer como sección crítica
 
             if (n != end)
             {
@@ -158,7 +163,7 @@ void productor(struct Args variables)
                 bf->buffer[bf->ent] = 0;
 
             bf->ent++;
-            if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 5, 0 1 2 3 4
+            if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 10, 0 1 2 3 4 5 6 7 8 9
                 bf->ent = 0;
 
             usleep(rand() % VELPROD);
@@ -172,7 +177,7 @@ void productor(struct Args variables)
     exit(0);
 }
 
-void consumidor(int max)
+void consumidor()
 {
     int n = 1;
 
@@ -186,7 +191,7 @@ void consumidor(int max)
         if (n)
         {
             printf("\tConsumidor consume %d\n", n);
-            addPrimeNumber(n, max);
+            addPrimeNumber(n);
         }
         bf->sal++;
         if (bf->sal == TAMBUFFER)
@@ -198,7 +203,6 @@ void consumidor(int max)
         semsignal(semarr, E_MAX);   // Si el productor está bloqueado porque el buffer estaba lleno, lo desbloquea
         usleep(rand() % VELCONS);
     }
-    printList();
     exit(0);
 }
 
@@ -247,7 +251,7 @@ void swap(primeNode *a, primeNode *b)
     b->primNumber = temp;
 }
 
-primeNode *createNode(int max)
+primeNode *createNode()
 {
     primeNode *temp;
     temp = (primeNode *)malloc(sizeof(struct node));
@@ -255,10 +259,10 @@ primeNode *createNode(int max)
     return temp;
 }
 
-void addPrimeNumber(int num, int max)
+void addPrimeNumber(int num)
 {
     primeNode *temp, *newNode;
-    newNode = createNode(max); //(primeNode*)malloc(sizeof(struct node));
+    newNode = createNode(); //(primeNode*)malloc(sizeof(struct node));
     temp = head;
     // printf("addPrimeNumber: %d\n", num);
     newNode->primNumber = num;

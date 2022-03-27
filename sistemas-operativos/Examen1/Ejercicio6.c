@@ -74,6 +74,7 @@ void *calcularPrimos(void *args)
         if (isprime(i))
         {
             count++;
+            printf("i: %d\n", i);
         }
     }
     pthread_mutex_lock(&g_cs);

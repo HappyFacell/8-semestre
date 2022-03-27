@@ -15,7 +15,6 @@
 
 #define LIMITE 100
 
-
 struct node
 {
     int primNumber;
@@ -24,8 +23,9 @@ struct node
 
 struct STRBUFF
 {
-    int ent;                        // Donde va a estar el siguiente elemento que voy a meter al buffer
-    int sal;                        // Donde está el siguiente elemento que voy a sacar del buffer
+    int ent; // Donde va a estar el siguiente elemento que voy a meter al buffer
+    int sal;
+    int count;                      // Donde está el siguiente elemento que voy a sacar del buffer
     unsigned int buffer[TAMBUFFER]; // Buffer circular
 };
 
@@ -49,7 +49,8 @@ enum
 {
     E_MAX,
     N_BLOK,
-    S_EXMUT
+    S_EXMUT,
+    S_STOP
 }; // Semáforos 0,1 y 2
 
 int max = 0;
@@ -64,7 +65,6 @@ int main(int argc, char *argv[])
     int p;
     int shmid;
     int pid;
-
 
     srand(getpid());
 
@@ -82,7 +82,6 @@ int main(int argc, char *argv[])
     initsem(semarr, N_BLOK, 0);
     initsem(semarr, S_EXMUT, 1);
 
-
     // Crear la memoria compartida
     // Solicitar memoria compartida para el buffer
     shmid = shmget((key_t)0x1234, sizeof(struct STRBUFF), 0666 | IPC_CREAT);
@@ -94,6 +93,7 @@ int main(int argc, char *argv[])
     bf = shmat(shmid, NULL, 0);
     bf->ent = 0;
     bf->sal = 0;
+    bf->count = 0;
 
     /* Aquí se crean los procesos */
     for (i = 0; i < NPRODS; i++)
@@ -150,7 +150,10 @@ void productor(int args)
             }
             else
             {
-                bf->buffer[bf->ent] = 0;
+                bf->count++;
+                // printf("%d\n", bf->count);
+                if (bf->count == NPRODS)
+                    bf->buffer[bf->ent] = 0;
             }
             bf->ent++;
             if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 5, 0 1 2 3 4
@@ -170,7 +173,6 @@ void productor(int args)
 void consumidor()
 {
     int n = 1;
-
     printf("Inicia Consumidor\n");
     while (n)
     {
@@ -178,7 +180,7 @@ void consumidor()
         semwait(semarr, S_EXMUT); // Asegura el buffer como sección crítica
 
         n = bf->buffer[bf->sal];
-        printf("\t\tn: %d\n", n);
+        // printf("\t\tn: %d\n", n);
         if (n)
         {
             printf("\tConsumidor consume %d\n", n);

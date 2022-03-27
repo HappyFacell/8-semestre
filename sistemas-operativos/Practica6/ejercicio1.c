@@ -17,7 +17,7 @@
 
 struct node
 {
-    int primNumber;
+    int Primo;
     struct node *next;
 };
 
@@ -29,10 +29,10 @@ struct STRBUFF
     unsigned int buffer[TAMBUFFER]; // Buffer circular
 };
 
-typedef struct node primeNode;
+typedef struct node NodoPrimo;
 
-primeNode *createNode();
-primeNode *head = NULL;
+NodoPrimo *createNode();
+NodoPrimo *List = NULL;
 
 struct STRBUFF *bf;
 
@@ -41,8 +41,8 @@ void consumidor();
 int isprime(int n);
 void addPrimeNumber(int num);
 void printList();
-void bubbleSort(primeNode *start);
-void swap(primeNode *a, primeNode *b);
+void bubbleSort(NodoPrimo *start);
+void swap(NodoPrimo *a, NodoPrimo *b);
 
 SEM_ID semarr;
 enum
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
     printf("min: %d max: %d\n", min, max);
 
-    head = (primeNode *)malloc(max * sizeof(struct node));
+    List = (NodoPrimo *)malloc(max * sizeof(struct node));
 
     // Creación del arreglo de semáforos
     semarr = createsemarray((key_t)0x1234, 3);
@@ -156,7 +156,7 @@ void productor(int args)
                     bf->buffer[bf->ent] = 0;
             }
             bf->ent++;
-            if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 5, 0 1 2 3 4
+            if (bf->ent == TAMBUFFER) 
                 bf->ent = 0;
 
             usleep(rand() % VELPROD);
@@ -202,20 +202,20 @@ void consumidor()
 
 void printList()
 {
-    printf("Soy un print :3\n");
-    bubbleSort(head);
-    head = head->next;
-    while (head != NULL)
+    // printf("Soy un print :3\n");
+    bubbleSort(List);
+    List = List->next;
+    while (List != NULL)
     {
-        printf("%d\n", head->primNumber);
-        head = head->next;
+        printf("%d\n", List->Primo);
+        List = List->next;
     }
 }
-void bubbleSort(primeNode *start)
+void bubbleSort(NodoPrimo *start)
 {
     int swapped, i;
-    primeNode *ptr1;
-    primeNode *lptr = NULL;
+    NodoPrimo *ptr1;
+    NodoPrimo *lptr = NULL;
 
     /* Checking for empty list */
     if (start == NULL)
@@ -228,7 +228,7 @@ void bubbleSort(primeNode *start)
 
         while (ptr1->next != lptr)
         {
-            if (ptr1->primNumber > ptr1->next->primNumber)
+            if (ptr1->Primo > ptr1->next->Primo)
             {
                 swap(ptr1, ptr1->next);
                 swapped = 1;
@@ -239,34 +239,34 @@ void bubbleSort(primeNode *start)
     } while (swapped);
 }
 
-void swap(primeNode *a, primeNode *b)
+void swap(NodoPrimo *a, NodoPrimo *b)
 {
-    int temp = a->primNumber;
-    a->primNumber = b->primNumber;
-    b->primNumber = temp;
+    int temp = a->Primo;
+    a->Primo = b->Primo;
+    b->Primo = temp;
 }
 
-primeNode *createNode()
+NodoPrimo *createNode()
 {
-    primeNode *temp;
-    temp = (primeNode *)malloc(sizeof(struct node));
+    NodoPrimo *temp;
+    temp = (NodoPrimo *)malloc(sizeof(struct node));
     temp->next = NULL;
     return temp;
 }
 
 void addPrimeNumber(int num)
 {
-    primeNode *temp, *newNode;
-    newNode = createNode(); //(primeNode*)malloc(sizeof(struct node));
-    temp = head;
-    // printf("addPrimeNumber: %d\n", num);
-    newNode->primNumber = num;
+    NodoPrimo *temp, *newNode;
+    newNode = createNode();
+    temp = List;
+    // printf("Numero agregado: %d\n", num);
+    newNode->Primo = num;
     newNode->next = NULL;
-    // printf("primNumber: %d\n", newNode->primNumber);
+    // printf("Primo: %d\n", newNode->Primo);
 
-    if (head == NULL)
+    if (List == NULL)
     {
-        head = newNode;
+        List = newNode;
         return;
     }
 
@@ -276,7 +276,7 @@ void addPrimeNumber(int num)
     }
 
     (temp)->next = newNode;
-    // printf("temp: %d\n", temp->next->primNumber);
+    // printf("temp: %d\n", temp->next->Primo);
 
     return;
 }

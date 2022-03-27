@@ -103,21 +103,26 @@ int main(int argc, char *argv[])
     bf->sal = 0;
 
     /* Aquí se crean los procesos */
-    for (i = 0; i < NPRODS; i++)
+    // for (i = 0; i < NPRODS; i++)
+    // {
+    //     pid = fork();
+    //     if (pid == 0)
+    //     {
+    //         intvar.i = i;
+    //         productor(intvar);
+    //     }
+    // }
+
+    pid = fork();
+    if (pid == 0)
     {
-        pid = fork();
-        if (pid == 0)
-        {
-            intvar.i = i;
-            productor(intvar);
-        }
+        productor(intvar);
     }
 
     p = fork();
     if (p == 0)
     {
         consumidor();
-
     }
 
     for (n = 0; n <= NPRODS; n++)
@@ -147,20 +152,23 @@ void productor(struct Args variables)
     int n;
 
     printf("Inicia productor\n");
-    for (n = start; n <= end; n++)
+    for (n = 0; n <= max; n++)
     {
-        if (isprime(n) || n == end)
+        if (isprime(n))
         {
             semwait(semarr, E_MAX);   // Si se llena el buffer se bloquea
             semwait(semarr, S_EXMUT); // Asegurar el buffer como sección crítica
 
-            if (n != end)
+            bf->buffer[bf->ent] = n;
+            printf("Productor produce %d\n", n);
+            if (n == max)
             {
-                bf->buffer[bf->ent] = n;
-                printf("Productor produce %d\n", n);
-            }
-            else
                 bf->buffer[bf->ent] = 0;
+                semsignal(semarr, S_EXMUT); // Libera la sección crítica del buffer
+                semsignal(semarr, N_BLOK);  // Si el consumidor está bloqueado porque el buffer está vacío, lo desbloqueas
+
+                usleep(rand() % VELPROD);
+            }
 
             bf->ent++;
             if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 10, 0 1 2 3 4 5 6 7 8 9
@@ -174,6 +182,12 @@ void productor(struct Args variables)
             usleep(rand() % VELPROD);
         }
     }
+    bf->buffer[bf->ent] = 0;
+    semsignal(semarr, S_EXMUT); // Libera la sección crítica del buffer
+    semsignal(semarr, N_BLOK);  // Si el consumidor está bloqueado porque el buffer está vacío, lo desbloqueas
+
+    usleep(rand() % VELPROD);
+    printf("hola\n");
     exit(0);
 }
 
@@ -188,6 +202,7 @@ void consumidor()
         semwait(semarr, S_EXMUT); // Asegura el buffer como sección crítica
 
         n = bf->buffer[bf->sal];
+        printf("\t\tn: %d\n", n);
         if (n)
         {
             printf("\tConsumidor consume %d\n", n);
@@ -203,11 +218,13 @@ void consumidor()
         semsignal(semarr, E_MAX);   // Si el productor está bloqueado porque el buffer estaba lleno, lo desbloquea
         usleep(rand() % VELCONS);
     }
+    printList();
     exit(0);
 }
 
 void printList()
 {
+    printf("Soy un print :3\n");
     bubbleSort(head);
     head = head->next;
     while (head != NULL)

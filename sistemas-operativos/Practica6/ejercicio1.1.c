@@ -15,6 +15,12 @@
 
 #define LIMITE 100
 
+struct Args
+{
+    int i;
+    int min;
+    int max;
+};
 
 struct node
 {
@@ -36,7 +42,7 @@ primeNode *head = NULL;
 
 struct STRBUFF *bf;
 
-void productor(int args);
+void productor(struct Args variables);
 void consumidor();
 int isprime(int n);
 void addPrimeNumber(int num);
@@ -52,26 +58,26 @@ enum
     S_EXMUT
 }; // Semáforos 0,1 y 2
 
-int max = 0;
-int min = 0;
-
 int main(int argc, char *argv[])
 {
     // Definición de variables
-    int i;
+    int min, max, i;
     int res;
     int n;
     int p;
     int shmid;
     int pid;
 
+    struct Args intvar;
 
     srand(getpid());
 
     min = atoi(argv[1]);
     max = atoi(argv[2]);
 
-    printf("min: %d max: %d\n", min, max);
+    intvar.min = min;
+
+    intvar.max = max;
 
     head = (primeNode *)malloc(max * sizeof(struct node));
 
@@ -82,6 +88,7 @@ int main(int argc, char *argv[])
     initsem(semarr, N_BLOK, 0);
     initsem(semarr, S_EXMUT, 1);
 
+    // printf("Semáforos creados\n");
 
     // Crear la memoria compartida
     // Solicitar memoria compartida para el buffer
@@ -96,13 +103,20 @@ int main(int argc, char *argv[])
     bf->sal = 0;
 
     /* Aquí se crean los procesos */
-    for (i = 0; i < NPRODS; i++)
+    // for (i = 0; i < NPRODS; i++)
+    // {
+    //     pid = fork();
+    //     if (pid == 0)
+    //     {
+    //         intvar.i = i;
+    //         productor(intvar);
+    //     }
+    // }
+
+    pid = fork();
+    if (pid == 0)
     {
-        pid = fork();
-        if (pid == 0)
-        {
-            productor(i);
-        }
+        productor(intvar);
     }
 
     p = fork();
@@ -126,34 +140,38 @@ int main(int argc, char *argv[])
     exit(EXIT_SUCCESS);
 }
 
-void productor(int args)
+void productor(struct Args variables)
 {
 
-    int nprocs = args;
-    int start = nprocs * (max / NPRODS);
+    int num = variables.i;
+    int min = variables.min;
+    int max = variables.max;
+    int start = num * (max / NPRODS);
     int end = start + (max / NPRODS);
 
     int n;
 
     printf("Inicia productor\n");
-    for (n = start; n <= end; n++)
+    for (n = 0; n <= max; n++)
     {
-        if (isprime(n) || n == end)
+        if (isprime(n))
         {
             semwait(semarr, E_MAX);   // Si se llena el buffer se bloquea
-            semwait(semarr, S_EXMUT); // Asegurar el buffer como sección crítoca
+            semwait(semarr, S_EXMUT); // Asegurar el buffer como sección crítica
 
-            if (n != end)
-            {
-                bf->buffer[bf->ent] = n;
-                printf("Productor produce %d\n", n);
-            }
-            else
+            bf->buffer[bf->ent] = n;
+            printf("Productor produce %d\n", n);
+            if (n == max)
             {
                 bf->buffer[bf->ent] = 0;
+                semsignal(semarr, S_EXMUT); // Libera la sección crítica del buffer
+                semsignal(semarr, N_BLOK);  // Si el consumidor está bloqueado porque el buffer está vacío, lo desbloqueas
+
+                usleep(rand() % VELPROD);
             }
+
             bf->ent++;
-            if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 5, 0 1 2 3 4
+            if (bf->ent == TAMBUFFER) // Si TAMBUFFER es 10, 0 1 2 3 4 5 6 7 8 9
                 bf->ent = 0;
 
             usleep(rand() % VELPROD);
@@ -164,6 +182,11 @@ void productor(int args)
             usleep(rand() % VELPROD);
         }
     }
+    bf->buffer[bf->ent] = 0;
+    semsignal(semarr, S_EXMUT); // Libera la sección crítica del buffer
+    semsignal(semarr, N_BLOK);  // Si el consumidor está bloqueado porque el buffer está vacío, lo desbloqueas
+
+    usleep(rand() % VELPROD);
     exit(0);
 }
 

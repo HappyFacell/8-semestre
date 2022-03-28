@@ -12,11 +12,11 @@
 
 struct msgbuf
 {
-    long mtype;     /* message type, must be > 0 */
-    char mtext[30]; /* message data */
+    long mtype;
+    char mtext[30];
 };
 
-int queue; // Buzón de mensajes
+int queue;
 
 struct Args
 {
@@ -64,7 +64,6 @@ int main(int argc, char *argv[])
 
     intvar.max = max;
 
-    // Crear buzón de mensajes
     queue = msgget(0x1234, 0666 | IPC_CREAT);
     if (queue == -1)
     {
@@ -72,7 +71,6 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    // Crea un proceso donde va a ejecutarse el emisor
     for (i = 0; i < NPRODS; i++)
     {
         pid = fork();
@@ -82,18 +80,10 @@ int main(int argc, char *argv[])
             emisor(intvar);
         }
     }
-    /*
-    pid=fork();
-    if(pid==0)
-        emisor();	// El hijo ejecuta el emisor
-    */
-
-    // Crea un proceso donde va a ejecutarse el receptor
     pid = fork();
     if (pid == 0)
-        receptor(max); // El hijo ejecuta el receptor
+        receptor(max);
 
-    // Esperar a que los dos procesos terminen
     for (int n = 0; n <= NPRODS; n++)
         wait(NULL);
 
@@ -111,22 +101,18 @@ void emisor(struct Args variables)
     struct msgbuf mensaje;
     for (i = start; i <= end; i++)
     {
-        // Construye un mensaje
-        mensaje.mtype = 1; // Prioridad o tipo del mensaje
+        mensaje.mtype = 1;
         if (isprime(i))
         {
             sprintf(mensaje.mtext, "%d", i);
-
-            // Envíe el mensaje al buzón
             msgsnd(queue, &mensaje, sizeof(struct msgbuf), IPC_NOWAIT); // No espera a que sea recibido
             sleep(1);
         }
     }
 
-    // Enviar el mensaje "FIN"
     sprintf(mensaje.mtext, "-1");
     msgsnd(queue, &mensaje, sizeof(struct msgbuf), IPC_NOWAIT);
-    exit(0); // Termina el emisor
+    exit(0);
 }
 
 void receptor(int max)
@@ -135,19 +121,16 @@ void receptor(int max)
     int status;
     do
     {
-        // Recibe un mensaje del buzón
         status = msgrcv(queue, &mensaje, sizeof(struct msgbuf), 1, IPC_NOWAIT);
         if (status != -1)
         {
-            // printf("%s\n",mensaje.mtext);
             addPrimeNumber(atoi(mensaje.mtext), max);
         }
-        // Imprimir el mensaje
 
-        usleep(200000);                         // 200,000 microsegundos = 1/5 de segundo
-    } while (strcmp(mensaje.mtext, "-1") != 0); // Mientras no sea fin
+        usleep(200000);
+    } while (strcmp(mensaje.mtext, "-1") != 0);
     printList();
-    exit(0); // Termina el receptor
+    exit(0);
 }
 
 void printList()
@@ -167,7 +150,6 @@ void bubbleSort(primeNode *start)
     primeNode *ptr1;
     primeNode *lptr = NULL;
 
-    /* Checking for empty list */
     if (start == NULL)
         return;
 
@@ -207,12 +189,10 @@ primeNode *createNode(int max)
 void addPrimeNumber(int num, int max)
 {
     primeNode *temp, *newNode;
-    newNode = createNode(max); //(primeNode*)malloc(sizeof(struct node));
+    newNode = createNode(max);
     temp = head;
-    // printf("addPrimeNumber: %d\n", num);
     newNode->primNumber = num;
     newNode->next = NULL;
-    // printf("primNumber: %d\n", newNode->primNumber);
 
     if (head == NULL)
     {
@@ -226,7 +206,6 @@ void addPrimeNumber(int num, int max)
     }
 
     (temp)->next = newNode;
-    // printf("temp: %d\n", temp->next->primNumber);
 
     return;
 }

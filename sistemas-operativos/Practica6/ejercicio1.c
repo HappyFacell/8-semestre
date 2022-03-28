@@ -24,8 +24,8 @@ struct node
 struct STRBUFF
 {
     int ent; // Donde va a estar el siguiente elemento que voy a meter al buffer
-    int sal;
-    int count;                      // Donde está el siguiente elemento que voy a sacar del buffer
+    int sal;// Donde está el siguiente elemento que voy a sacar del buffer
+    int count;
     unsigned int buffer[TAMBUFFER]; // Buffer circular
 };
 
@@ -58,7 +58,6 @@ int min = 0;
 
 int main(int argc, char *argv[])
 {
-    // Definición de variables
     int i;
     int res;
     int n;
@@ -151,7 +150,6 @@ void productor(int args)
             else
             {
                 bf->count++;
-                // printf("%d\n", bf->count);
                 if (bf->count == NPRODS)
                     bf->buffer[bf->ent] = 0;
             }
@@ -180,7 +178,6 @@ void consumidor()
         semwait(semarr, S_EXMUT); // Asegura el buffer como sección crítica
 
         n = bf->buffer[bf->sal];
-        // printf("\t\tn: %d\n", n);
         if (n)
         {
             printf("\tConsumidor consume %d\n", n);
@@ -202,7 +199,6 @@ void consumidor()
 
 void printList()
 {
-    // printf("Soy un print :3\n");
     bubbleSort(List);
     List = List->next;
     while (List != NULL)
@@ -217,7 +213,6 @@ void bubbleSort(NodoPrimo *start)
     NodoPrimo *ptr1;
     NodoPrimo *lptr = NULL;
 
-    /* Checking for empty list */
     if (start == NULL)
         return;
 
@@ -259,10 +254,8 @@ void addPrimeNumber(int num)
     NodoPrimo *temp, *newNode;
     newNode = createNode();
     temp = List;
-    // printf("Numero agregado: %d\n", num);
     newNode->Primo = num;
     newNode->next = NULL;
-    // printf("Primo: %d\n", newNode->Primo);
 
     if (List == NULL)
     {
@@ -276,7 +269,6 @@ void addPrimeNumber(int num)
     }
 
     (temp)->next = newNode;
-    // printf("temp: %d\n", temp->next->Primo);
 
     return;
 }

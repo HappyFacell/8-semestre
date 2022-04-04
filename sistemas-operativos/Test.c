@@ -63,17 +63,23 @@ void main()
         threadHandles[i] = CreateThread(NULL, 0, threadProc, threadIdPtr, 0, NULL);
     }
 
-    threadHandles[NUMTHREADS] = CreateThread(NULL, 0, masterThreadProc, NULL, 0, NULL);
     printf("Count of ln(1 + x) Mercator's series members is %d\n", SERIES_MEMBER_COUNT);
     printf("Argument value of x is %f\n", (double)x);
     WaitForMultipleObjects(NUMTHREADS + 1, threadHandles, TRUE, INFINITE);
+    res = 0;
+    for (int i = 0; i < NUMTHREADS; i++)
+    {
+        res += sums[i];
+    }
+
     stop = clock();
+
     printf("Tiempo = %2.7f\n", (float)(stop - start) / CLOCKS_PER_SEC);
     for (int i = 0; i < NUMTHREADS + 1; i++)
         CloseHandle(threadHandles[i]);
-    delete threadHandles;
-    DeleteCriticalSection(&countCS);
-    delete sums;
+
+    free(threadHandles);
+    free(sums);
     printf("Result is %10.8f\n", res);
     printf("By function call ln(1 + %f) = %10.8f\n", x, log(1 + x));
     printf("Press any key ... ");

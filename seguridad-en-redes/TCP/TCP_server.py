@@ -1,3 +1,4 @@
+import base64
 import socket
 import Pseudo_random
 
@@ -14,4 +15,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             data = conn.recv(1024)
             if not data:
                 break
-            conn.sendall(Pseudo_random.random())
+            conn.sendall(Pseudo_random.random()) 
+            # conn.sendall(base64.b64decode(Pseudo_random.random())) #Dato original

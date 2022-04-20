@@ -1,10 +1,11 @@
+import base64
 import nacl.utils
 
 def random() -> bytes:
-  return nacl.utils.random()
+  return base64.b64encode(nacl.utils.random())
 
-def main():
-  print(random())
 
 if __name__ == "__main__":
-  main()
+  # for i in range(10):
+  #   print("i: ",i)
+  print(random())

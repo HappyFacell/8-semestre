@@ -18,7 +18,7 @@ def main() -> None:
                     break
                 file_data += data
 
-    with open("./server/file_to_send.txt", "wb") as file:
+    with open("./server/file to recive.txt", "wb") as file:
         file.write(file_data)
 
 

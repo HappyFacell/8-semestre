@@ -26,42 +26,38 @@ int pagefault(char *vaddress)
     long pag_del_proceso;
 
     // Calcula la página del proceso
-    pag_del_proceso=(long) vaddress>>12;
+    pag_del_proceso = (long)vaddress >> 12;
     // Cuenta los marcos asignados al proceso
-    i=countframesassigned();
-  
-    // Busca un marco libre en el sistema
-    frame=getfreeframe();
+    i = countframesassigned();
 
-	// Ya no hay más marcos
-    if(frame==-1)
+    // Busca un marco libre en el sistema
+    frame = getfreeframe();
+
+    // Ya no hay más marcos
+    if (frame == -1)
     {
-        return(-1); // Regresar indicando error de memoria insuficiente
+        return (-1); // Regresar indicando error de memoria insuficiente
     }
 
+    (ptbr + pag_del_proceso)->presente = 1;
+    (ptbr + pag_del_proceso)->framenumber = frame;
 
-    (ptbr+pag_del_proceso)->presente=1;
-    (ptbr+pag_del_proceso)->framenumber=frame;
-
-
-    return(1); // Regresar todo bien
+    return (1); // Regresar todo bien
 }
-
 
 int getfreeframe()
 {
     int i;
     // Busca un marco libre en el sistema
-    for(i=framesbegin;i<systemframetablesize+framesbegin;i++)
-        if(!systemframetable[i].assigned)
+    for (i = framesbegin; i < systemframetablesize + framesbegin; i++)
+        if (!systemframetable[i].assigned)
         {
-            systemframetable[i].assigned=1;
+            systemframetable[i].assigned = 1;
             break;
         }
-    if(i<systemframetablesize+framesbegin)
-        systemframetable[i].assigned=1;
+    if (i < systemframetablesize + framesbegin)
+        systemframetable[i].assigned = 1;
     else
-        i=-1;
-    return(i);
+        i = -1;
+    return (i);
 }
-

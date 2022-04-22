@@ -18,7 +18,7 @@ def main() -> None:
                     break
                 file_data += data # Guardamos los datos recibidos para escribirlos en el archivo de servidor
 
-    with open("./server/file_to_recive.txt", "wb") as file: # Creamos el archivo y escribimos en el
+    with open("file_to_recive.txt", "wb") as file: # Creamos el archivo y escribimos en el
         file.write(file_data)
 
 

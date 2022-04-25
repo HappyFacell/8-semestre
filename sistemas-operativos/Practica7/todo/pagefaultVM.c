@@ -24,7 +24,7 @@ extern struct PROCESSPAGETABLE *ptbr;
 
 int getfreeframe();
 int searchvirtualframe();
-int getlru(); // Cambiamos por lru para mayor eficiencia
+int getlru(); // Cambiamos por lru en lugar de fifo para mayor eficiencia
 
 int pagefault(char *vaddress)
 {
@@ -86,7 +86,7 @@ int pagefault(char *vaddress)
     // Si no hay marcos físicos libres en el sistema regresa error
     if (frame == -1)
     {
-        return -1;
+        return -1;// Regresar indicando error de memoria insuficiente
     }
 
     // Si la página estaba en memoria secundaria

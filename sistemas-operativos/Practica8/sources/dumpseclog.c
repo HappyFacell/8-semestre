@@ -7,7 +7,7 @@
 #define LINESIZE 16
 #define SECSIZE 512
 
-int main(int argc,char *argv[])
+int main(int argc, char *argv[])
 {
 	int drive;
 	int logunit;
@@ -15,47 +15,45 @@ int main(int argc,char *argv[])
 	int fd;
 	unsigned char buffer[SECSIZE];
 	int offset;
-	int i,j,r;
+	int i, j, r;
 	unsigned char c;
 
-	if(argc==3)
-	{	
-		logunit=atoi(argv[1]);
-		nseclog=atoi(argv[2]);
-
-		printf("Desplegando Unidad lógica=%d, Seclog=%d\n",logunit,nseclog);
-		
-	}
-	else	
+	if (argc == 3)
 	{
-		fprintf(stderr,"Error en los argumentos\n");
+		logunit = atoi(argv[1]);
+		nseclog = atoi(argv[2]);
+
+		printf("Desplegando Unidad lógica=%d, Seclog=%d\n", logunit, nseclog);
+	}
+	else
+	{
+		fprintf(stderr, "Error en los argumentos\n");
 		exit(1);
 	}
 
-	if(vdreadseclog(logunit,nseclog,buffer)==-1)
+	if (vdreadseclog(logunit, nseclog, buffer) == -1)
 	{
-		fprintf(stderr,"Error al abrir disco virtual\n");
+		fprintf(stderr, "Error al abrir disco virtual\n");
 		exit(1);
 	}
 
-	for(i=0;i<SECSIZE/LINESIZE;i++)
+	for (i = 0; i < SECSIZE / LINESIZE; i++)
 	{
-		printf("\n %3X -->",i*LINESIZE);
-		for(j=0;j<LINESIZE;j++)
+		printf("\n %3X -->", i * LINESIZE);
+		for (j = 0; j < LINESIZE; j++)
 		{
-			c=buffer[i*LINESIZE+j];
-			printf("%2X ",c);
+			c = buffer[i * LINESIZE + j];
+			printf("%2X ", c);
 		}
 		printf("  |  ");
-		for(j=0;j<LINESIZE;j++)
+		for (j = 0; j < LINESIZE; j++)
 		{
-			c=buffer[i*LINESIZE+j]%256;
-			if(c>0x1F && c<127)
-				printf("%c",c);
+			c = buffer[i * LINESIZE + j] % 256;
+			if (c > 0x1F && c < 127)
+				printf("%c", c);
 			else
 				printf(".");
 		}
 	}
 	printf("\n");
 }
-

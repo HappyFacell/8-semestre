@@ -2,10 +2,10 @@
 
 int getuid()
 {
-	return(1);
+	return (1);
 }
 
 int getgid()
 {
-	return(1);
+	return (1);
 }

@@ -15,7 +15,7 @@ USUARIOS_AUTENTICADOS = {
 f = open("secretInfo.txt", "w")
 
 
-def cifrarArchivo(informacionArchivo: bytes):
+def EncriptarArchivo(informacionArchivo: bytes):
     # Encriptar el mensaje que nos ha enviado el cliente
     # llave
     box = nacl.secret.SecretBox(_key)
@@ -31,7 +31,7 @@ def cifrarArchivo(informacionArchivo: bytes):
     return encrypted
 
 
-def decifrarArchivo(infoArchivo):
+def DesencriptarArchivo(infoArchivo):
     try:
         # print(type(infoArchivo))
         box = nacl.secret.SecretBox(_key)
@@ -48,7 +48,7 @@ def decifrarArchivo(infoArchivo):
         print("Error en la desencriptacion del archivo")
 
 
-def firmaDeArchivo(informacionEncriptada: str):
+def FirmaDeArchivo(informacionEncriptada: str):
     sign_key = SigningKey.generate()
     infoFirmada = sign_key.sign(informacionEncriptada)
     f = open("secretInfo.txt", "a")
@@ -57,7 +57,7 @@ def firmaDeArchivo(informacionEncriptada: str):
     return infoFirmada, sign_key
 
 
-def verificacionFirmaArchivos(infoFirmada, key: SigningKey):
+def ConfirmacionFirmaArchivos(infoFirmada, key: SigningKey):
     verify_key = VerifyKey(key.verify_key.encode())
     res = verify_key.verify(infoFirmada)
     f = open("secretInfo.txt", "a")
@@ -80,7 +80,7 @@ def login(usr: str, pwd: str):
     return False
 
 
-def bitacoraAccesos():
+def BitacoraAccesos():
     f = open("users.txt", "r")
     print(f.read())
     f.close()
@@ -120,24 +120,24 @@ if __name__ == "__main__":
         print(f'Arhico cifrado')
         # archivoCifrado = cifrarArchivo(message)
 
-        archivoCifrado = cifrarArchivo(message)
+        archivoCifrado = EncriptarArchivo(message)
         client_socket.sendall(f'Archivo cifrado: \n{archivoCifrado}'.encode())
 
         # Decifrar el archivo
         print(f'Decifrar el archivo')
-        archivoDecifrado = decifrarArchivo(archivoCifrado)
+        archivoDecifrado = DesencriptarArchivo(archivoCifrado)
         client_socket.sendall(
             f'Archivo Decifrado: \n{archivoDecifrado}'.encode())
 
         # Firmar el archivo encriptado
         print("Firmar el archivo")
-        infoFirmada, key = firmaDeArchivo(archivoCifrado)
+        infoFirmada, key = FirmaDeArchivo(archivoCifrado)
 
         # Verificar la firma del arhivo
         print("Verificacion de firma")
-        infoVerificada = verificacionFirmaArchivos(infoFirmada, key)
+        infoVerificada = ConfirmacionFirmaArchivos(infoFirmada, key)
 
         # Bitacora
-        bitacoraAccesos()
+        BitacoraAccesos()
 
     s.close()
